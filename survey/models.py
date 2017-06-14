@@ -18,7 +18,7 @@ class Team(models.Model):
 class RC_Building(models.Model):
 	# Basic Info
 	uniq = models.PositiveIntegerField("Unique ID", blank=True, null=True)
-	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING, blank=True)
+	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING)
 	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
 	gps_x = models.DecimalField("Latitude",max_digits = 10, decimal_places = 7)
@@ -34,7 +34,7 @@ class RC_Building(models.Model):
 	s_zone = models.PositiveIntegerField("Seismic Zone")
 	
 	# Features
-	soft_st = models.BooleanField("Soft Storey",default = False)
+	soft_st = models.NullBooleanField("Soft Storey")
 	vrt_irr = models.BooleanField("Vertical Irregularities",default = False)
 	pl_irr = models.BooleanField("Plan Irregularities",default = False)
 	hvy_ovh = models.BooleanField("Heavy Overhangs",default = False)
@@ -65,7 +65,7 @@ class RC_Building(models.Model):
 class MS_Building(models.Model):
 	# Basic Info
 	uniq = models.PositiveIntegerField("Unique ID", blank=True, null=True)
-	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING, blank=True)
+	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING)
 	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
 	gps_x = models.DecimalField("Latitude",max_digits = 10, decimal_places = 7)
@@ -96,7 +96,7 @@ class MS_Building(models.Model):
 class HY_Building(models.Model):
 	# Basic Info
 	uniq = models.PositiveIntegerField("Unique ID", blank=True, null=True)
-	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING, blank=True)
+	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING)
 	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
 	gps_x = models.DecimalField("Latitude",max_digits = 10, decimal_places = 7)
@@ -127,7 +127,7 @@ class HY_Building(models.Model):
 class CM_Building(models.Model):
 	# Basic Info
 	uniq = models.PositiveIntegerField("Unique ID", blank=True, null=True)
-	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING, blank=True)
+	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING)
 	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
 	gps_x = models.DecimalField("Latitude",max_digits = 10, decimal_places = 7)
