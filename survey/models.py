@@ -19,7 +19,7 @@ class RC_Building(models.Model):
 	# Basic Info
 	uniq = models.PositiveIntegerField("Unique ID", blank=True, null=True)
 	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING, blank=True)
-	bl_id = models.CharField("Building ID",max_length=10, primary_key = True, blank=True)
+	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
 	gps_x = models.DecimalField("Latitude",max_digits = 10, decimal_places = 7)
 	gps_y = models.DecimalField("Longtitude",max_digits = 10, decimal_places = 7)
@@ -36,15 +36,18 @@ class RC_Building(models.Model):
 	# Features
 	soft_st = models.BooleanField("Soft Storey",default = False)
 	vrt_irr = models.BooleanField("Vertical Irregularities",default = False)
-	pl_irr = models.BooleanField(default = False)
-	hvy_ovh = models.BooleanField(default = False)
-	shr_col = models.BooleanField(default = False)
+	pl_irr = models.BooleanField("Plan Irregularities",default = False)
+	hvy_ovh = models.BooleanField("Heavy Overhangs",default = False)
+	shr_col = models.BooleanField("Short Column",default = False)
 
 	def save(self, *args, **kwargs):
 		print(self.yr_constr)
 		print(self.yr_extn)
 		print('\n')
 		print(self.yr_extn is None)
+		print('\n')
+		print(self.bl_id is None)
+		print(self.uniq is None)
 		tm_cnt = RC_Building.objects.filter(team = self.team).count() + 1
 		print(tm_cnt)
 		self.bl_id = self.team.name + '-' + str(tm_cnt)
@@ -61,17 +64,18 @@ class RC_Building(models.Model):
 	
 class MS_Building(models.Model):
 	# Basic Info
-	uniq = models.PositiveIntegerField("Unique ID", unique=True)
+	uniq = models.PositiveIntegerField("Unique ID", blank=True, null=True)
 	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING, blank=True)
-	bl_id = models.CharField("Building ID",max_length=10, primary_key = True)
+	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
 	gps_x = models.DecimalField("Latitude",max_digits = 10, decimal_places = 7)
 	gps_y = models.DecimalField("Longtitude",max_digits = 10, decimal_places = 7)
-	oc_day = models.PositiveIntegerField("Occupancy: Day")
-	oc_night = models.PositiveIntegerField("Occupancy: Night")
-	no_floor = models.PositiveSmallIntegerField("No. of Floors")
-	yr_constr = models.PositiveSmallIntegerField("Year of Construction")
-	yr_extn = models.PositiveSmallIntegerField("Year of Extension(If Any)",blank=True)
+	oc_day = models.DecimalField("Occupancy: Day", max_digits = 10, decimal_places = 0)
+	oc_night = models.DecimalField("Occupancy: Night", max_digits = 10, decimal_places =0)
+	no_floor = models.DecimalField("No. of Floors", max_digits = 2, decimal_places = 0)
+	bas_prsnt = models.BooleanField("Basement", blank = True, )
+	yr_constr = models.DecimalField("Year of Construction", max_digits = 4, decimal_places = 0)
+	yr_extn = models.DecimalField("Year of Extension(If Any)",max_digits=4, decimal_places=0, blank=True, null=True)
 	acc_level = models.CharField("Access Level",max_length = 10)
 	bl_use = models.CharField("Building Use",max_length = 50)
 	s_zone = models.PositiveIntegerField("Seismic Zone")
@@ -91,17 +95,18 @@ class MS_Building(models.Model):
 
 class HY_Building(models.Model):
 	# Basic Info
-	uniq = models.PositiveIntegerField("Unique ID", unique=True)
+	uniq = models.PositiveIntegerField("Unique ID", blank=True, null=True)
 	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING, blank=True)
-	bl_id = models.CharField("Building ID",max_length=5, primary_key = True)
+	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
 	gps_x = models.DecimalField("Latitude",max_digits = 10, decimal_places = 7)
 	gps_y = models.DecimalField("Longtitude",max_digits = 10, decimal_places = 7)
-	oc_day = models.PositiveIntegerField("Occupancy: Day")
-	oc_night = models.PositiveIntegerField("Occupancy: Night")
-	no_floor = models.PositiveSmallIntegerField("No. of Floors")
-	yr_constr = models.PositiveSmallIntegerField("Year of Construction")
-	yr_extn = models.PositiveSmallIntegerField("Year of Extension(If Any)",blank=True)
+	oc_day = models.DecimalField("Occupancy: Day", max_digits = 10, decimal_places = 0)
+	oc_night = models.DecimalField("Occupancy: Night", max_digits = 10, decimal_places =0)
+	no_floor = models.DecimalField("No. of Floors", max_digits = 2, decimal_places = 0)
+	bas_prsnt = models.BooleanField("Basement", blank = True, )
+	yr_constr = models.DecimalField("Year of Construction", max_digits = 4, decimal_places = 0)
+	yr_extn = models.DecimalField("Year of Extension(If Any)",max_digits=4, decimal_places=0, blank=True, null=True)
 	acc_level = models.CharField("Access Level",max_length = 10)
 	bl_use = models.CharField("Building Use",max_length = 50)
 	s_zone = models.PositiveIntegerField("Seismic Zone")
@@ -118,3 +123,28 @@ class HY_Building(models.Model):
 	class Meta:
 		verbose_name = "Hybrid Building"
 		verbose_name_plural = "Hybrid Buildings"
+
+class CM_Building(models.Model):
+	# Basic Info
+	uniq = models.PositiveIntegerField("Unique ID", blank=True, null=True)
+	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING, blank=True)
+	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
+	addr = models.CharField("Address",max_length = 200)
+	gps_x = models.DecimalField("Latitude",max_digits = 10, decimal_places = 7)
+	gps_y = models.DecimalField("Longtitude",max_digits = 10, decimal_places = 7)
+	oc_day = models.DecimalField("Occupancy: Day", max_digits = 10, decimal_places = 0)
+	oc_night = models.DecimalField("Occupancy: Night", max_digits = 10, decimal_places =0)
+	no_floor = models.DecimalField("No. of Floors", max_digits = 2, decimal_places = 0)
+	bas_prsnt = models.BooleanField("Basement", blank = True, )
+	yr_constr = models.DecimalField("Year of Construction", max_digits = 4, decimal_places = 0)
+	yr_extn = models.DecimalField("Year of Extension(If Any)",max_digits=4, decimal_places=0, blank=True, null=True)
+	acc_level = models.CharField("Access Level",max_length = 10)
+	bl_use = models.CharField("Building Use",max_length = 50)
+	s_zone = models.PositiveIntegerField("Seismic Zone")
+
+	def __str__(self):
+		return self.bl_id
+
+	class Meta:
+		verbose_name = "Composite Building"
+		verbose_name_plural = "Composite Buildings"
