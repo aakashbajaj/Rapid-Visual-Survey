@@ -47,6 +47,10 @@ class RC_Building(models.Model):
 	
 	def __str__(self):
 		return self.bl_id
+
+	class Meta:
+		verbose_name = "RC Building"
+		verbose_name_plural = "RC Buildings"
 	
 class MS_Building(models.Model):
 	# Basic Info
@@ -66,8 +70,17 @@ class MS_Building(models.Model):
 	s_zone = models.PositiveIntegerField("Seismic Zone")
 	
 	def save(self, *args, **kwargs):
+		tm_cnt = Building.objects.filter(team = self.team).count() + 1
+		bl_id = self.team.name + '-' + str(tm_cnt)
+		uniq = Building.objects.all().count() + 1
 		super(RC_Building, self).save(*args, **kwargs)
 	
+	def __str__(self):
+		return self.bl_id
+
+	class Meta:
+		verbose_name = "Masonary Building"
+		verbose_name_plural = "Masonary Buildings"
 
 class HY_Building(models.Model):
 	# Basic Info
@@ -87,5 +100,14 @@ class HY_Building(models.Model):
 	s_zone = models.PositiveIntegerField("Seismic Zone")
 	
 	def save(self, *args, **kwargs):
+		tm_cnt = Building.objects.filter(team = self.team).count() + 1
+		bl_id = self.team.name + '-' + str(tm_cnt)
+		uniq = Building.objects.all().count() + 1
 		super(RC_Building, self).save(*args, **kwargs)
 	
+	def __str__(self):
+		return self.bl_id
+
+	class Meta:
+		verbose_name = "Hybrid Building"
+		verbose_name_plural = "Hybrid Buildings"
