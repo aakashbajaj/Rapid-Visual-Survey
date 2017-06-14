@@ -12,10 +12,13 @@ class Team(models.Model):
 	mem_3 = models.CharField("Member 3",max_length = 50, blank = True)
 	mem_4 = models.CharField("Member 4",max_length = 50, blank = True)
 
+	def __str__(self):
+		return self.name
+
 class RC_Building(models.Model):
 	# Basic Info
 	uniq = models.PositiveIntegerField("Unique ID", unique=True)
-	team = models.ForeignKey("Team", Team, on_delete = models.DO_NOTHING, blank=True)
+	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING, blank=True)
 	bl_id = models.CharField("Building ID",max_length=10, primary_key = True)
 	addr = models.CharField("Address",max_length = 200)
 	gps_x = models.DecimalField("Latitude",max_digits = 10, decimal_places = 7)
@@ -48,7 +51,7 @@ class RC_Building(models.Model):
 class MS_Building(models.Model):
 	# Basic Info
 	uniq = models.PositiveIntegerField("Unique ID", unique=True)
-	team = models.ForeignKey("Team",Team, on_delete = models.DO_NOTHING)
+	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING, blank=True)
 	bl_id = models.CharField("Building ID",max_length=10, primary_key = True)
 	addr = models.CharField("Address",max_length = 200)
 	gps_x = models.DecimalField("Latitude",max_digits = 10, decimal_places = 7)
@@ -69,7 +72,7 @@ class MS_Building(models.Model):
 class HY_Building(models.Model):
 	# Basic Info
 	uniq = models.PositiveIntegerField("Unique ID", unique=True)
-	team = models.ForeignKey("Team",Team, on_delete = models.DO_NOTHING)
+	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING, blank=True)
 	bl_id = models.CharField("Building ID",max_length=5, primary_key = True)
 	addr = models.CharField("Address",max_length = 200)
 	gps_x = models.DecimalField("Latitude",max_digits = 10, decimal_places = 7)
