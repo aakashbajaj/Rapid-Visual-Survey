@@ -23,7 +23,7 @@ class RCAdminSet(admin.ModelAdmin):
 
 		('Date and Time', {'fields':['dt_tkn']}),
 
-		('Building Features', {'fields':['soft_st','vrt_irr','pl_irr','hvy_ovh','frm_act','shr_col']}),
+		('Building Features', {'fields':['soft_st','vrt_irr','pl_irr','hvy_ovh','shr_col','frm_act']}),
 		
 		('Falling Hazards', {'fields':['rf_sign','ac_grl','el_prp','hv_elf','hv_cnp','sb_bal','hv_cld','str_gl'], 'classes':['collapse']})
 	]

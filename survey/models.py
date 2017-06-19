@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-
+from django.utils import timezone
 # Create your models here.
 
 class Team(models.Model):
@@ -36,18 +36,28 @@ class RC_Building(models.Model):
 		('Mixed','Mixed'),
 		('Others','Others')
 	)
+
+	BASM_CHOICE = (
+		('P', "Presesnt"),
+		('A', "Absent")
+	)
+
+	FEAT_CHOICE = (
+		(0, "Absent"),
+		(1, "Present")
+	)
 	
 	# Basic Info
 	uniq = models.PositiveIntegerField("Unique ID", blank=True, null=True)
 	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING)
 	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
-	gps_x = models.DecimalField("Latitude",max_digits = 10, decimal_places = 7)
-	gps_y = models.DecimalField("Longtitude",max_digits = 10, decimal_places = 7)
+	gps_x = models.DecimalField("Latitude",max_digits = 9, decimal_places = 7)
+	gps_y = models.DecimalField("Longtitude",max_digits = 9, decimal_places = 7)
 	oc_day = models.DecimalField("Day", max_digits = 10, decimal_places = 0)
 	oc_night = models.DecimalField("Night", max_digits = 10, decimal_places =0)
 	no_floor = models.DecimalField("No. of Floors", max_digits = 2, decimal_places = 0)
-	bas_prsnt = models.NullBooleanField("Basement")
+	bas_prsnt = models.CharField("Basement",max_length=1, choices=BASM_CHOICE)
 	yr_constr = models.DecimalField("Year of Construction", max_digits = 4, decimal_places = 0)
 	yr_extn = models.DecimalField("Year of Extension (If Any)",max_digits=4, decimal_places=0, blank=True, null=True)
 	bl_use = models.CharField("Building Use",max_length = 50, choices=BLD_USE)
@@ -56,14 +66,14 @@ class RC_Building(models.Model):
 	s_zone = models.PositiveIntegerField("Seismic Zone", choices=SEISMIC_ZONE)
 	
 	# Date and Time Taken
-	dt_tkn = models.DateTimeField("Taken On")
+	dt_tkn = models.DateTimeField("Taken On", blank=True)
 
 	# Features
-	soft_st = models.NullBooleanField("Soft Storey")
-	vrt_irr = models.NullBooleanField("Vertical Irregularities")
-	pl_irr = models.NullBooleanField("Plan Irregularities")
-	hvy_ovh = models.NullBooleanField("Heavy Overhangs")
-	shr_col = models.NullBooleanField("Short Column")
+	soft_st = models.PositiveIntegerField("Soft Storey",choices=FEAT_CHOICE, blank=True)
+	vrt_irr = models.PositiveIntegerField("Vertical Irregularities",choices=FEAT_CHOICE)
+	pl_irr = models.PositiveIntegerField("Plan Irregularities",choices=FEAT_CHOICE)
+	hvy_ovh = models.PositiveIntegerField("Heavy Overhangs",choices=FEAT_CHOICE)
+	shr_col = models.PositiveIntegerField("Short Column",choices=FEAT_CHOICE)
 
 	# Other Features
 	frm_act = models.NullBooleanField("Frame Action Present")
@@ -94,6 +104,11 @@ class RC_Building(models.Model):
 		print(tm_cnt)
 
 
+		# Assigning Date and Time
+		if self.dt_tkn is None:
+			self.dt_tkn = timezone.now()
+
+		# Assigning ID to building
 		if self.bl_id is None:
 			self.bl_id = self.team.name + '-' + str(tm_cnt)
 		print(self.bl_id)
