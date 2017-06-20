@@ -35,6 +35,12 @@ FEAT_CHOICE = (
 	(1, "Present")
 )
 
+QUAL_CHOICE = (
+	(0,"Good"),
+	(1,"Moderate"),
+	(2,"Poor")
+)
+
 
 
 class Team(models.Model):
@@ -74,7 +80,7 @@ class RC_Building(models.Model):
 	# soft_st = models.PositiveIntegerField("Soft Storey",choices=FEAT_CHOICE, blank=True)
 	# vrt_irr = models.PositiveIntegerField("Vertical Irregularities",choices=FEAT_CHOICE)
 	# pl_irr = models.PositiveIntegerField("Plan Irregularities",choices=FEAT_CHOICE)
-	hvy_ovh = models.PositiveIntegerField("Heavy Overhangs",choices=FEAT_CHOICE)
+	# hvy_ovh = models.PositiveIntegerField("Heavy Overhangs",choices=FEAT_CHOICE)
 	shr_col = models.PositiveIntegerField("Short Column",choices=FEAT_CHOICE)
 
 	# Other Features
@@ -94,15 +100,24 @@ class RC_Building(models.Model):
 	pr_stb = models.PositiveIntegerField("Presence of Setback", choices=FEAT_CHOICE)
 	bl_slp = models.PositiveIntegerField("Building on Sloppy Ground", choices=FEAT_CHOICE)
 
+
 	pl_irr = models.PositiveIntegerField("Plan Irregularities",choices=FEAT_CHOICE, blank=True, default=0)
 	# Plan Irregularities
 	ir_plc = models.PositiveIntegerField("Irregular Plan Configuration", choices=FEAT_CHOICE)
 	re_crn = models.PositiveIntegerField("Re-Entrant Corners", choices=FEAT_CHOICE)
 
+
 	hvy_ovh = models.PositiveIntegerField("Heavy Overhangs",choices=FEAT_CHOICE, blank=True, default=0)
 	# Heavy Overhangs
 	md_hrp = models.PositiveIntegerField("Moderate Horizontal Projections", choices=FEAT_CHOICE)
 	sb_hrp = models.PositiveIntegerField("Substantial Horizontal Projections", choices=FEAT_CHOICE)
+
+
+	ap_qlt = models.PositiveIntegerField("Apparent Quality", choices=QUAL_CHOICE, blank=True, default=0)
+	# Apparent Quality
+	ql_mat = models.PositiveIntegerField("Apparent Quality of Construction and Materials", choices=QUAL_CHOICE)
+	maintc = models.PositiveIntegerField("Maintainence", choices=QUAL_CHOICE)
+
 
 	# Falling Hazards
 	rf_sign = models.NullBooleanField("Marquees/Hoardings/Roof Signs", default=False)
