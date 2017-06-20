@@ -90,7 +90,7 @@ class RC_Building(models.Model):
 	shr_col = models.PositiveIntegerField("Short Column",choices=FEAT_CHOICE)
 
 	# Other Features
-	frm_act = models.NullBooleanField("Frame Action Present")
+	frm_act = models.PositiveIntegerField("Frame Action", choices=FEAT_CHOICE)
 
 
 	soft_st = models.PositiveIntegerField("Soft Storey",choices=FEAT_CHOICE, blank=True, default=0)
