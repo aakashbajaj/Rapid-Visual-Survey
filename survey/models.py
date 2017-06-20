@@ -41,6 +41,12 @@ QUAL_CHOICE = (
 	(2,"Poor")
 )
 
+SOIL_CHOICE = (
+	(0, "Medium"),
+	(1, "Hard"),
+	(-1, "Soft")
+)
+
 
 
 class Team(models.Model):
@@ -118,6 +124,14 @@ class RC_Building(models.Model):
 	ql_mat = models.PositiveIntegerField("Apparent Quality of Construction and Materials", choices=QUAL_CHOICE)
 	maintc = models.PositiveIntegerField("Maintainence", choices=QUAL_CHOICE)
 
+
+	pnding = models.PositiveIntegerField("Pounding", choices=FEAT_CHOICE, blank=True, default=0)
+	# Pounding
+	un_flr = models.PositiveIntegerField("Unaligned Floors", choices=FEAT_CHOICE)
+	pr_qlt = models.PositiveIntegerField("Poor Apparent Quality of Adjacent Buildings", choices=FEAT_CHOICE)
+
+	# Soil Condition
+	soil_cn = models.IntegerField("Soil Condtition", choices=SOIL_CHOICE)
 
 	# Falling Hazards
 	rf_sign = models.NullBooleanField("Marquees/Hoardings/Roof Signs", default=False)
