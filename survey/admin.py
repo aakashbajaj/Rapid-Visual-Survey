@@ -30,7 +30,7 @@ class RCAdminSet(admin.ModelAdmin):
 
 	list_display = ('bl_id','dt_tkn')
 
-admin.site.register(RC_Building, RCAdminSet)
+admin.site.register(RC_Building)
 # admin.site.unregister(Building)
 # admin.site.unregister(RC)
 # admin.site.unregister(Team)

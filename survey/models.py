@@ -5,6 +5,38 @@ from django.db import models
 from django.utils import timezone
 # Create your models here.
 
+# Choices for all fields
+ACCESS_CHOICES = (
+	('FULL', 'FULL'),
+	('PARTIAL', 'PARTIAL'),
+	('NO', 'NO')
+)
+
+SEISMIC_ZONE = (
+	( 1, 'II and III'),
+	( 2, 'IV'),
+	( 3, 'V')
+)
+
+BLD_USE = (
+	('Residential','Residential'),
+	('Commercial','Commercial'),
+	('Mixed','Mixed'),
+	('Others','Others')
+)
+
+BASM_CHOICE = (
+	('P', "Presesnt"),
+	('A', "Absent")
+)
+
+FEAT_CHOICE = (
+	(0, "Absent"),
+	(1, "Present")
+)
+
+
+
 class Team(models.Model):
 	name = models.CharField(max_length = 2, unique = True)
 	mem_1 = models.CharField("Member 1",max_length = 50, blank = False)
@@ -16,36 +48,6 @@ class Team(models.Model):
 		return self.name
 
 class RC_Building(models.Model):
-	
-	# Choices for all fields
-	ACCESS_CHOICES = (
-		('FULL', 'FULL'),
-		('PARTIAL', 'PARTIAL'),
-		('NO', 'NO')
-	)
-
-	SEISMIC_ZONE = (
-		( 1, 'II and III'),
-		( 2, 'IV'),
-		( 3, 'V')
-	)
-
-	BLD_USE = (
-		('Residential','Residential'),
-		('Commercial','Commercial'),
-		('Mixed','Mixed'),
-		('Others','Others')
-	)
-
-	BASM_CHOICE = (
-		('P', "Presesnt"),
-		('A', "Absent")
-	)
-
-	FEAT_CHOICE = (
-		(0, "Absent"),
-		(1, "Present")
-	)
 	
 	# Basic Info
 	uniq = models.PositiveIntegerField("Unique ID", blank=True, null=True)
@@ -69,14 +71,38 @@ class RC_Building(models.Model):
 	dt_tkn = models.DateTimeField("Taken On", blank=True)
 
 	# Features
-	soft_st = models.PositiveIntegerField("Soft Storey",choices=FEAT_CHOICE, blank=True)
-	vrt_irr = models.PositiveIntegerField("Vertical Irregularities",choices=FEAT_CHOICE)
-	pl_irr = models.PositiveIntegerField("Plan Irregularities",choices=FEAT_CHOICE)
+	# soft_st = models.PositiveIntegerField("Soft Storey",choices=FEAT_CHOICE, blank=True)
+	# vrt_irr = models.PositiveIntegerField("Vertical Irregularities",choices=FEAT_CHOICE)
+	# pl_irr = models.PositiveIntegerField("Plan Irregularities",choices=FEAT_CHOICE)
 	hvy_ovh = models.PositiveIntegerField("Heavy Overhangs",choices=FEAT_CHOICE)
 	shr_col = models.PositiveIntegerField("Short Column",choices=FEAT_CHOICE)
 
 	# Other Features
 	frm_act = models.NullBooleanField("Frame Action Present")
+
+
+	soft_st = models.PositiveIntegerField("Soft Storey",choices=FEAT_CHOICE, blank=True, default=0)
+	# Soft Storey
+	op_prk = models.PositiveIntegerField("Open Parking at Ground Level", choices=FEAT_CHOICE)
+	ab_prt = models.PositiveIntegerField("Absence of Partition Walls in Ground or Any Intermediate", choices=FEAT_CHOICE)
+	st_shp = models.PositiveIntegerField("Storey for Shops or Other Commercial Use", choices=FEAT_CHOICE)
+	tl_htg = models.PositiveIntegerField("Taller Height in Ground or Any Other Intermediate Storey", choices=FEAT_CHOICE)
+
+
+	vrt_irr = models.PositiveIntegerField("Vertical Irregularities",choices=FEAT_CHOICE, blank=True, default=0)
+	# Vertical Irregularities
+	pr_stb = models.PositiveIntegerField("Presence of Setback", choices=FEAT_CHOICE)
+	bl_slp = models.PositiveIntegerField("Building on Sloppy Ground", choices=FEAT_CHOICE)
+
+	pl_irr = models.PositiveIntegerField("Plan Irregularities",choices=FEAT_CHOICE, blank=True, default=0)
+	# Plan Irregularities
+	ir_plc = models.PositiveIntegerField("Irregular Plan Configuration", choices=FEAT_CHOICE)
+	re_crn = models.PositiveIntegerField("Re-Entrant Corners", choices=FEAT_CHOICE)
+
+	hvy_ovh = models.PositiveIntegerField("Heavy Overhangs",choices=FEAT_CHOICE, blank=True, default=0)
+	# Heavy Overhangs
+	md_hrp = models.PositiveIntegerField("Moderate Horizontal Projections", choices=FEAT_CHOICE)
+	sb_hrp = models.PositiveIntegerField("Substantial Horizontal Projections", choices=FEAT_CHOICE)
 
 	# Falling Hazards
 	rf_sign = models.NullBooleanField("Marquees/Hoardings/Roof Signs", default=False)
