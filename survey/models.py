@@ -321,18 +321,31 @@ class HY_Building(models.Model):
 	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING)
 	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
-	gps_x = models.DecimalField("Latitude",max_digits = 10, decimal_places = 7)
-	gps_y = models.DecimalField("Longtitude",max_digits = 10, decimal_places = 7)
-	oc_day = models.DecimalField("Occupancy: Day", max_digits = 10, decimal_places = 0)
-	oc_night = models.DecimalField("Occupancy: Night", max_digits = 10, decimal_places =0)
-	no_floor = models.DecimalField("No. of Floors", max_digits = 2, decimal_places = 0)
-	bas_prsnt = models.BooleanField("Basement", blank = True, )
-	yr_constr = models.DecimalField("Year of Construction", max_digits = 4, decimal_places = 0)
-	yr_extn = models.DecimalField("Year of Extension(If Any)",max_digits=4, decimal_places=0, blank=True, null=True)
-	acc_level = models.CharField("Access Level",max_length = 10)
-	bl_use = models.CharField("Building Use",max_length = 50)
-	s_zone = models.PositiveIntegerField("Seismic Zone")
+	gps_x = models.DecimalField("Latitude",max_digits = 9, decimal_places = 7)
+	gps_y = models.DecimalField("Longtitude",max_digits = 9, decimal_places = 7)
+	oc_day = models.DecimalField("Day", max_digits = 10, decimal_places = 0, validators=[MinValueValidator(0)])
+	oc_night = models.DecimalField("Night", max_digits = 10, decimal_places =0, validators=[MinValueValidator(0)])
+	no_floor = models.DecimalField("No. of Floors", max_digits = 2, decimal_places = 0, validators=[MinValueValidator(0)])
+	bas_prsnt = models.PositiveIntegerField("Basement",choices=FEAT_CHOICE)
+	yr_constr = models.DecimalField("Year of Construction", max_digits = 4, decimal_places = 0, validators=[MinValueValidator(1800), MaxValueValidator(timezone.now().year)])
+	yr_extn = models.DecimalField("Year of Extension (If Any)",max_digits=4, decimal_places=0, blank=True, null=True, validators=[MinValueValidator(1800), MaxValueValidator(timezone.now().year)])
+	bl_use = models.CharField("Building Use",max_length = 50, choices=BLD_USE)
+	op_bl_use = models.CharField("If Others, Specify",max_length=50, blank=True, null=True)
+	acc_level = models.CharField("Access Level",max_length = 10, choices=ACCESS_CHOICES)
+	s_zone = models.PositiveIntegerField("Seismic Zone", choices=SEISMIC_ZONE)
 	
+	# Date and Time Taken
+	dt_tkn = models.DateTimeField("Taken On", blank=True)
+
+	# Soil Condition
+	soil_cn = models.IntegerField("Soil Condtition", choices=SOIL_CHOICE)
+
+	# Signature URL
+	sign_url = models.CharField(max_length = 300, validators=[URLValidator])
+
+	# Performance Score
+	perf_score = models.IntegerField("Performance Score", blank=True)
+
 	def save(self, *args, **kwargs):
 		tm_cnt = Building.objects.filter(team = self.team).count() + 1
 		bl_id = self.team.name + '-' + str(tm_cnt)
