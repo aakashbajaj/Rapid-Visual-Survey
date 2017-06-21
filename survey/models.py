@@ -303,10 +303,23 @@ class MS_Building(models.Model):
 	perf_score = models.IntegerField("Performance Score", blank=True)
 
 	def save(self, *args, **kwargs):
-		tm_cnt = Building.objects.filter(team = self.team).count() + 1
-		bl_id = self.team.name + '-' + str(tm_cnt)
-		uniq = Building.objects.all().count() + 1
-		super(RC_Building, self).save(*args, **kwargs)
+
+		# Assigning Date and Time
+		if self.dt_tkn is None:
+			self.dt_tkn = timezone.now()
+
+		tm_cnt = MS_Building.objects.filter(team = self.team).count() + 1
+
+		# Assigning ID to building
+		if self.bl_id is None:
+			self.bl_id = self.team.name + '-' + str(tm_cnt)
+
+		if self.uniq is None:
+			self.uniq = MS_Building.objects.all().count() + 1
+
+		self.perf_score = RC_score(self)
+
+		return super(RC_Building, self).save(*args, **kwargs)
 	
 	def __str__(self):
 		return self.bl_id
