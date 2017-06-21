@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.utils import timezone
+
+from django.core.validators import MinValueValidator, MaxValueValidator
 # Create your models here.
 
 # Choices for all fields
@@ -68,12 +70,12 @@ class RC_Building(models.Model):
 	addr = models.CharField("Address",max_length = 200)
 	gps_x = models.DecimalField("Latitude",max_digits = 9, decimal_places = 7)
 	gps_y = models.DecimalField("Longtitude",max_digits = 9, decimal_places = 7)
-	oc_day = models.DecimalField("Day", max_digits = 10, decimal_places = 0)
-	oc_night = models.DecimalField("Night", max_digits = 10, decimal_places =0)
-	no_floor = models.DecimalField("No. of Floors", max_digits = 2, decimal_places = 0)
+	oc_day = models.DecimalField("Day", max_digits = 10, decimal_places = 0, validators=[MinValueValidator(0)])
+	oc_night = models.DecimalField("Night", max_digits = 10, decimal_places =0, validators=[MinValueValidator(0)])
+	no_floor = models.DecimalField("No. of Floors", max_digits = 2, decimal_places = 0, validators=[MinValueValidator(0)])
 	bas_prsnt = models.CharField("Basement",max_length=1, choices=BASM_CHOICE)
-	yr_constr = models.DecimalField("Year of Construction", max_digits = 4, decimal_places = 0)
-	yr_extn = models.DecimalField("Year of Extension (If Any)",max_digits=4, decimal_places=0, blank=True, null=True)
+	yr_constr = models.DecimalField("Year of Construction", max_digits = 4, decimal_places = 0, validators=[MinValueValidator(1800)])
+	yr_extn = models.DecimalField("Year of Extension (If Any)",max_digits=4, decimal_places=0, blank=True, null=True, validators=[MinValueValidator(1900)])
 	bl_use = models.CharField("Building Use",max_length = 50, choices=BLD_USE)
 	op_bl_use = models.CharField("If Others, Specify",max_length=50, blank=True, null=True)
 	acc_level = models.CharField("Access Level",max_length = 10, choices=ACCESS_CHOICES)
@@ -81,6 +83,12 @@ class RC_Building(models.Model):
 	
 	# Date and Time Taken
 	dt_tkn = models.DateTimeField("Taken On", blank=True)
+
+	# Soil Condition
+	soil_cn = models.IntegerField("Soil Condtition", choices=SOIL_CHOICE)
+
+	# Signature URL
+	sign_url = models.CharField(max_length = 300)
 
 	# Features
 	# soft_st = models.PositiveIntegerField("Soft Storey",choices=FEAT_CHOICE, blank=True)
@@ -130,9 +138,6 @@ class RC_Building(models.Model):
 	un_flr = models.PositiveIntegerField("Unaligned Floors", choices=FEAT_CHOICE)
 	pr_qlt = models.PositiveIntegerField("Poor Apparent Quality of Adjacent Buildings", choices=FEAT_CHOICE)
 
-	# Soil Condition
-	soil_cn = models.IntegerField("Soil Condtition", choices=SOIL_CHOICE)
-
 	# Falling Hazards
 	rf_sign = models.NullBooleanField("Marquees/Hoardings/Roof Signs", default=False)
 	ac_grl = models.NullBooleanField("AC Units/Grillwork", default=False)
@@ -143,33 +148,19 @@ class RC_Building(models.Model):
 	hv_cld = models.NullBooleanField("Heavy Cladding", default=False)
 	str_gl = models.NullBooleanField("Structural Glazing", default=False)
 
-	# Signature URL
-	sign_url = models.CharField(max_length = 300)
-
 	def save(self, *args, **kwargs):
-		self.soft_st = True
-		print(self.yr_constr)
-		print(self.yr_extn)
-		print('\n')
-		print(self.yr_extn is None)
-		print('\n')
-		print(self.bl_id is None)
-		print(self.uniq is None)
-		tm_cnt = RC_Building.objects.filter(team = self.team).count() + 1
-		print(tm_cnt)
-
-
 		# Assigning Date and Time
 		if self.dt_tkn is None:
 			self.dt_tkn = timezone.now()
 
+		tm_cnt = RC_Building.objects.filter(team = self.team).count() + 1
 		# Assigning ID to building
 		if self.bl_id is None:
 			self.bl_id = self.team.name + '-' + str(tm_cnt)
-		print(self.bl_id)
+
 		if self.uniq is None:
 			self.uniq = RC_Building.objects.all().count() + 1
-		
+
 		return super(RC_Building, self).save(*args, **kwargs)
 	
 	def __str__(self):
