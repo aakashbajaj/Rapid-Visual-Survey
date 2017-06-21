@@ -14,14 +14,14 @@ class RCAdminSet(admin.ModelAdmin):
 	fieldsets = [
 		('ID', {'fields':['uniq', 'bl_id']}),
 
+		('Date and Time', {'fields':['dt_tkn']}),
+
 		('Basic Information', {'fields':['team','addr','no_floor','bas_prsnt','yr_constr',
 'yr_extn','acc_level','bl_use','op_bl_use','s_zone',]}),
 
 		('Occupancy', {'fields':['oc_day','oc_night']}),
 
 		('GPS Coordinates', {'fields':['gps_x','gps_y']}),
-
-		('Date and Time', {'fields':['dt_tkn']}),
 
 		('Soft Storey', {'fields':['op_prk','ab_prt','st_shp','tl_htg']}),
 
@@ -44,6 +44,8 @@ class RCAdminSet(admin.ModelAdmin):
 		('Building Features', {'fields':['soft_st','vrt_irr','pl_irr','hvy_ovh','ap_qlt','pnding']}),
 		
 		('Falling Hazards', {'fields':['rf_sign','ac_grl','el_prp','hv_elf','hv_cnp','sb_bal','hv_cld','str_gl']}),
+
+		('Performance Score', {'fields':['perf_score']}),
 
 		('Signature', {'fields':['sign_url']})
 	]
