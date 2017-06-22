@@ -16,10 +16,9 @@ class RCAdminSet(admin.ModelAdmin):
 
 		('Date and Time', {'fields':['dt_tkn']}),
 
-		('Basic Information', {'fields':['team','addr','no_floor','bas_prsnt','yr_constr',
-'yr_extn','acc_level','bl_use','op_bl_use','s_zone',]}),
+		('Basic Information', {'fields':['team','addr','no_floor','bas_prsnt','yr_constr', 'yr_aval','yr_extn','acc_level','bl_use','op_bl_use','s_zone',]}),
 
-		('Occupancy', {'fields':['oc_day','oc_night']}),
+		('Occupancy', {'fields':['oc_day','oc_night','oc_navl']}),
 
 		('GPS Coordinates', {'fields':['gps_x','gps_y']}),
 

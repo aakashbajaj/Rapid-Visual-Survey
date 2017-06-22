@@ -5,6 +5,7 @@ from django.db import models
 from django.utils import timezone
 
 from django.core.validators import MinValueValidator, MaxValueValidator, URLValidator
+from django.core.exceptions import ValidationError
 # Create your models here.
 
 # Choices for all fields
@@ -165,11 +166,13 @@ class RC_Building(models.Model):
 	addr = models.CharField("Address",max_length = 200)
 	gps_x = models.DecimalField("Latitude",max_digits = 9, decimal_places = 7)
 	gps_y = models.DecimalField("Longtitude",max_digits = 9, decimal_places = 7)
-	oc_day = models.DecimalField("Day", max_digits = 10, decimal_places = 0, validators=[MinValueValidator(0)])
-	oc_night = models.DecimalField("Night", max_digits = 10, decimal_places =0, validators=[MinValueValidator(0)])
-	no_floor = models.DecimalField("No. of Floors", max_digits = 2, decimal_places = 0, validators=[MinValueValidator(0)])
+	oc_day = models.DecimalField("Day", max_digits = 10, decimal_places = 0, validators=[MinValueValidator(0)], blank=True, null=True)
+	oc_night = models.DecimalField("Night", max_digits = 10, decimal_places =0, validators=[MinValueValidator(0)], null=True, blank=True)
+	oc_navl = models.BooleanField("Occupancy Data Not Available?")
+	no_floor = models.DecimalField("No. of Floors", max_digits = 2, decimal_places = 0, validators=[MinValueValidator(0)], null=True)
 	bas_prsnt = models.PositiveIntegerField("Basement",choices=FEAT_CHOICE)
-	yr_constr = models.DecimalField("Year of Construction", max_digits = 4, decimal_places = 0, validators=[MinValueValidator(1800), MaxValueValidator(timezone.now().year)])
+	yr_constr = models.DecimalField("Year of Construction",null=True, max_digits = 4, decimal_places = 0, validators=[MinValueValidator(1800), MaxValueValidator(timezone.now().year)], blank=True)
+	yr_aval = models.BooleanField("Not Available?")
 	yr_extn = models.DecimalField("Year of Extension (If Any)",max_digits=4, decimal_places=0, blank=True, null=True, validators=[MinValueValidator(1800), MaxValueValidator(timezone.now().year)])
 	bl_use = models.CharField("Building Use",max_length = 50, choices=BLD_USE)
 	op_bl_use = models.CharField("If Others, Specify",max_length=50, blank=True, null=True)
@@ -240,8 +243,6 @@ class RC_Building(models.Model):
 	hv_cld = models.NullBooleanField("Heavy Cladding", default=False)
 	str_gl = models.NullBooleanField("Structural Glazing", default=False)
 
-	
-
 	def save(self, *args, **kwargs):
 
 		# Assigning Date and Time
@@ -262,6 +263,14 @@ class RC_Building(models.Model):
 	
 	def __str__(self):
 		return self.bl_id
+
+	def clean(self):
+		cleaned_data = super(RC_Building, self).clean()
+		if self.yr_aval is False and self.yr_constr is None:
+			raise ValidationError("Please Enter the Year of Construction")
+
+		if (self.oc_day is None or self.oc_night is None) and self.oc_navl is False:
+			raise ValidationError("Please Enter Occupancy Data")
 
 	class Meta:
 		verbose_name = "RC Building"
