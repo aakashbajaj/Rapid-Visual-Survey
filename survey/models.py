@@ -63,6 +63,47 @@ IRR_CHOICE = (
 
 
 def RC_score(bd):
+
+	# Plan Irregularities	
+	if bd.ir_plc is 1 and bd.re_crn is 1:
+		bd.pl_irr = 2
+	elif (bd.ir_plc is 1 and bd.re_crn is 0) or (bd.ir_plc is 0 and bd.re_crn is 1):
+		bd.pl_irr = 1
+	else:
+		bd.pl_irr = 0
+
+	# Soft Storey
+	if bd.op_prk is 1 or bd.ab_prt is 1 or bd.st_shp is 1 or bd.tl_htg is 1:
+		bd.soft_st = 1
+	else:
+		bd.soft_st = 0
+
+	# Vertical Irregularity
+	if bd.pr_stb is 1 or bd.bl_slp is 1:
+		bd.vrt_irr = 1
+	else:
+		bd.vrt_irr = 0
+
+	# Heavy Overhangs
+	if bd.md_hrp is 1 or bd.sb_hrp is 1:
+		bd.hvy_ovh = 1
+	else:
+		bd.hvy_ovh = 0
+
+	# Apparent Quality
+	if bd.ql_mat is 2 and bd.maintc is 2:
+		bd.ap_qlt = 2
+	elif bd.ql_mat is 0 and bd.maintc is 0:
+		bd.ap_qlt = 0
+	else:
+		bd.ap_qlt = 1
+
+	# Pounding
+	if bd.un_flr is 1 or bd.pr_qlt is 1:
+		bd.pnding = 1
+	else:
+		bd.pnding = 0
+
 	buil_flr = int(bd.no_floor)
 
 	if buil_flr is 2:
@@ -78,7 +119,6 @@ def RC_score(bd):
 		 4: {1:120, 2:100, 3:75},
 		 5: {1:100, 2:85, 3:65},
 		 6: {1:90, 2:80, 3:60}
-
 	}
 
 	base_score = base_table[flr][bd.s_zone]
@@ -158,7 +198,6 @@ class RC_Building(models.Model):
 	# Other Features
 	frm_act = models.PositiveIntegerField("Frame Action", choices=FRM_CHOICE)
 
-
 	soft_st = models.PositiveIntegerField("Soft Storey",choices=FEAT_CHOICE, blank=True)
 	# Soft Storey
 	op_prk = models.PositiveIntegerField("Open Parking at Ground Level", choices=FEAT_CHOICE)
@@ -166,30 +205,25 @@ class RC_Building(models.Model):
 	st_shp = models.PositiveIntegerField("Storey for Shops or Other Commercial Use", choices=FEAT_CHOICE)
 	tl_htg = models.PositiveIntegerField("Taller Height in Ground or Any Other Intermediate Storey", choices=FEAT_CHOICE)
 
-
 	vrt_irr = models.PositiveIntegerField("Vertical Irregularities",choices=FEAT_CHOICE, blank=True)
 	# Vertical Irregularities
 	pr_stb = models.PositiveIntegerField("Presence of Setback", choices=FEAT_CHOICE)
 	bl_slp = models.PositiveIntegerField("Building on Sloppy Ground", choices=FEAT_CHOICE)
-
 
 	pl_irr = models.PositiveIntegerField("Plan Irregularities",choices=IRR_CHOICE, blank=True)
 	# Plan Irregularities
 	ir_plc = models.PositiveIntegerField("Irregular Plan Configuration", choices=FEAT_CHOICE)
 	re_crn = models.PositiveIntegerField("Re-Entrant Corners", choices=FEAT_CHOICE)
 
-
 	hvy_ovh = models.PositiveIntegerField("Heavy Overhangs",choices=FEAT_CHOICE, blank=True)
 	# Heavy Overhangs
 	md_hrp = models.PositiveIntegerField("Moderate Horizontal Projections", choices=FEAT_CHOICE)
 	sb_hrp = models.PositiveIntegerField("Substantial Horizontal Projections", choices=FEAT_CHOICE)
 
-
 	ap_qlt = models.PositiveIntegerField("Apparent Quality", choices=QUAL_CHOICE, blank=True)
 	# Apparent Quality
 	ql_mat = models.PositiveIntegerField("Apparent Quality of Construction and Materials", choices=QUAL_CHOICE)
 	maintc = models.PositiveIntegerField("Maintainence", choices=QUAL_CHOICE)
-
 
 	pnding = models.PositiveIntegerField("Pounding", choices=FEAT_CHOICE, blank=True)
 	# Pounding
@@ -206,47 +240,9 @@ class RC_Building(models.Model):
 	hv_cld = models.NullBooleanField("Heavy Cladding", default=False)
 	str_gl = models.NullBooleanField("Structural Glazing", default=False)
 
+	
+
 	def save(self, *args, **kwargs):
-
-		# Plan Irregularities	
-		if self.ir_plc is 1 and self.re_crn is 1:
-			self.pl_irr = 2
-		elif (self.ir_plc is 1 and self.re_crn is 0) or (self.ir_plc is 0 and self.re_crn is 1):
-			self.pl_irr = 1
-		else:
-			self.pl_irr = 0
-
-		# Soft Storey
-		if self.op_prk is 1 or self.ab_prt is 1 or self.st_shp is 1 or self.tl_htg is 1:
-			self.soft_st = 1
-		else:
-			self.soft_st = 0
-
-		# Vertical Irregularity
-		if self.pr_stb is 1 or self.bl_slp is 1:
-			self.vrt_irr = 1
-		else:
-			self.vrt_irr = 0
-
-		# Heavy Overhangs
-		if self.md_hrp is 1 or self.sb_hrp is 1:
-			self.hvy_ovh = 1
-		else:
-			self.hvy_ovh = 0
-
-		# Apparent Quality
-		if self.ql_mat is 2 and self.maintc is 2:
-			self.ap_qlt = 2
-		elif self.ql_mat is 0 and self.maintc is 0:
-			self.ap_qlt = 0
-		else:
-			self.ap_qlt = 1
-
-		# Pounding
-		if self.un_flr is 1 or self.pr_qlt is 1:
-			self.pnding = 1
-		else:
-			self.pnding = 0
 
 		# Assigning Date and Time
 		if self.dt_tkn is None:
