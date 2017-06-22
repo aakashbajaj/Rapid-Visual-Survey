@@ -401,6 +401,17 @@ class HY_Building(models.Model):
 	def __str__(self):
 		return self.bl_id
 
+	def clean(self):
+		cleaned_data = super(RC_Building, self).clean()
+		if self.yr_aval is False and self.yr_constr is None:
+			raise ValidationError("Please Enter the Year of Construction")
+
+		if (self.oc_day is None or self.oc_night is None) and self.oc_navl is False:
+			raise ValidationError("Please Enter Occupancy Data")
+
+		if str(self.bl_use) == 'Others' and self.op_bl_use is None:
+			raise ValidationError("Enter Other Building Use")
+
 	class Meta:
 		verbose_name = "Hybrid Building"
 		verbose_name_plural = "Hybrid Buildings"
