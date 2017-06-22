@@ -272,6 +272,9 @@ class RC_Building(models.Model):
 		if (self.oc_day is None or self.oc_night is None) and self.oc_navl is False:
 			raise ValidationError("Please Enter Occupancy Data")
 
+		if str(self.bl_use) == 'Others' and self.op_bl_use is None:
+			raise ValidationError("Enter Other Building Use")
+
 	class Meta:
 		verbose_name = "RC Building"
 		verbose_name_plural = "RC Buildings"
