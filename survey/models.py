@@ -266,7 +266,7 @@ class RC_Building(models.Model):
 			self.bl_id = self.team.name + '-' + str(tm_cnt)
 
 		if self.uniq is None:
-			self.uniq = RC_Building.objects.all().count() + 1
+			self.uniq = MS_Building.objects.all().count() +  RC_Building.objects.all().count() + HY_Building.objects.all().count() + 1
 
 		self.perf_score = RC_score(self)
 
@@ -396,7 +396,7 @@ class MS_Building(models.Model):
 			self.bl_id = self.team.name + '-' + str(tm_cnt)
 
 		if self.uniq is None:
-			self.uniq = MS_Building.objects.all().count() + 1
+			self.uniq = MS_Building.objects.all().count() +  RC_Building.objects.all().count() + HY_Building.objects.all().count() + 1
 
 		self.perf_score = 10
 
@@ -466,7 +466,7 @@ class HY_Building(models.Model):
 			self.bl_id = self.team.name + '-' + str(tm_cnt)
 
 		if self.uniq is None:
-			self.uniq = HY_Building.objects.all().count() + 1
+			self.uniq = MS_Building.objects.all().count() +  RC_Building.objects.all().count() + HY_Building.objects.all().count() + 1
 
 		return super(HY_Building, self).save(*args, **kwargs)
 	
