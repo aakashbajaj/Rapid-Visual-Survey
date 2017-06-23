@@ -158,6 +158,46 @@ def RC_score(bd):
 	return perf_sc
 
 
+def MS_Score(bd):
+
+	# Structural Irregularity
+	if bd.lck_wll is 1 or bd.hvy_ovh is 1 or bd.re_crn is 1 or bd.crn_bld is 1:
+		bd.str_irr = 1
+
+	# Apparent Quality
+	if bd.ql_mat is 2 and bd.maintc is 2:
+		bd.ap_qlt = 2
+	elif bd.ql_mat is 0 and bd.maintc is 0:
+		bd.ap_qlt = 0
+	else:
+		bd.ap_qlt = 1
+
+	# Diaphragm Action
+	if bd.ab_diap is 1 or bd.lrg_cut is 1:
+		bd.diap_ab = 1
+
+
+
+	buil_flr = int(bd.no_floor)
+
+	if buil_flr is 2:
+		flr = 1
+	elif buil_flr > 5:
+		flr = 5
+	else:
+		flr = buil_flr
+
+	base_table = {
+		 1: {1:150, 2:130, 3:100},
+		 3: {1:125, 2:110, 3:85},
+		 4: {1:110, 2:90, 3:70},
+		 5: {1:70, 2:60, 3:50}
+	}
+
+	base_score = base_table[flr][bd.s_zone]
+
+	pnding_f = {1:0, 3:-2, 4:-3, 5:-5, 6:-5}
+
 class Team(models.Model):
 	name = models.CharField(max_length = 2, unique = True)
 	mem_1 = models.CharField("Member 1",max_length = 50, blank = False)
@@ -337,7 +377,7 @@ class MS_Building(models.Model):
 	irr_opn = models.PositiveIntegerField("Irregularly Placed Openings", choices=FEAT_CHOICE)
 	opn_crn = models.PositiveIntegerField("Openings at Corners of Bearing Wall Interactions", choices=FEAT_CHOICE)
 
-	diap_ac = models.PositiveIntegerField("Diaphragm Action", choices=FEAT_CHOICE, blank=True)
+	diap_ab = models.PositiveIntegerField("Diaphragm Action Absent?", choices=BOOL_CHOICE, blank=True)
 	# Diaphragm Action
 	ab_diap = models.PositiveIntegerField("Absence of Diaphragms", choices=BOOL_CHOICE)
 	lrg_cut = models.PositiveIntegerField("Large Cut-outs in Diaphragm", choices=FEAT_CHOICE)
