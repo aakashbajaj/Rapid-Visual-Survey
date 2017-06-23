@@ -235,6 +235,7 @@ def MS_Score(bd):
 	orn_opn_f = {1:-2, 3:-5, 4:-5, 5:-5}
 	pnding_f = {1:0, 3:-3, 4:-5, 5:-5}
 	diap_ac_f = {1:-10, 3:-15, 4:-15, 5:-15}
+	bas_prsnt_f = {1:0, 3:3, 4:4, 5:5}
 
 	strirr = bd.str_irr * (-10)
 	apqlty = bd.ap_qlt * (-10)
@@ -246,8 +247,9 @@ def MS_Score(bd):
 	hrzbnd = bd.hrz_bnd * (20)
 	archf = bd.arch * (-10)
 	rublwl = bd.rub_wll * (-15)
+	bsmnt = bd.bas_prsnt * bas_prsnt_f[flr]
 
-	vs = strirr + apqlty + soilcn + pound + wlopng + irropn + diapac + hrzbnd + archf + rublwl
+	vs = strirr + apqlty + soilcn + pound + wlopng + irropn + diapac + hrzbnd + archf + rublwl + bsmnt
 
 	perf_sc = base_score + vs
 
