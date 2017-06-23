@@ -8,7 +8,6 @@ from .models import RC_Building, Team, MS_Building, HY_Building
 
 admin.site.register(Team)
 admin.site.register(HY_Building)
-admin.site.register(MS_Building)
 
 class RCAdminSet(admin.ModelAdmin):
 	fieldsets = [
@@ -96,3 +95,6 @@ class MSAdminSet(admin.ModelAdmin):
 	]
 
 	list_display = ('bl_id', 'dt_tkn')
+
+
+admin.site.register(MS_Building, MSAdminSet)
