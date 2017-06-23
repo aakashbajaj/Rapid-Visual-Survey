@@ -62,6 +62,11 @@ IRR_CHOICE = (
 	(2,"Extreme")
 )
 
+TYP_CHOICE = (
+	("Brick Masonary", "Brick Masonary"),
+	("Composite", "Composite")
+)
+
 
 def RC_score(bd):
 
@@ -168,7 +173,7 @@ class RC_Building(models.Model):
 	gps_y = models.DecimalField("Longtitude",max_digits = 9, decimal_places = 7)
 	oc_day = models.DecimalField("Day", max_digits = 10, decimal_places = 0, validators=[MinValueValidator(0)], blank=True, null=True)
 	oc_night = models.DecimalField("Night", max_digits = 10, decimal_places =0, validators=[MinValueValidator(0)], null=True, blank=True)
-	oc_navl = models.BooleanField("Occupancy Data Not Available?")
+	oc_navl = models.BooleanField("Not Available?")
 	no_floor = models.DecimalField("No. of Floors", max_digits = 2, decimal_places = 0, validators=[MinValueValidator(0)], null=True)
 	bas_prsnt = models.PositiveIntegerField("Basement",choices=FEAT_CHOICE)
 	yr_constr = models.DecimalField("Year of Construction",null=True, max_digits = 4, decimal_places = 0, validators=[MinValueValidator(1800), MaxValueValidator(timezone.now().year)], blank=True)
@@ -290,12 +295,13 @@ class MS_Building(models.Model):
 	gps_y = models.DecimalField("Longtitude",max_digits = 9, decimal_places = 7)
 	oc_day = models.DecimalField("Day", max_digits = 10, decimal_places = 0, validators=[MinValueValidator(0)], blank=True, null=True)
 	oc_night = models.DecimalField("Night", max_digits = 10, decimal_places =0, validators=[MinValueValidator(0)], null=True, blank=True)
-	oc_navl = models.BooleanField("Occupancy Data Not Available?")
+	oc_navl = models.BooleanField("Not Available?")
 	no_floor = models.DecimalField("No. of Floors", max_digits = 2, decimal_places = 0, validators=[MinValueValidator(0)], null=True)
 	bas_prsnt = models.PositiveIntegerField("Basement",choices=FEAT_CHOICE)
 	yr_constr = models.DecimalField("Year of Construction",null=True, max_digits = 4, decimal_places = 0, validators=[MinValueValidator(1800), MaxValueValidator(timezone.now().year)], blank=True)
 	yr_aval = models.BooleanField("Not Available?")
 	yr_extn = models.DecimalField("Year of Extension (If Any)",max_digits=4, decimal_places=0, blank=True, null=True, validators=[MinValueValidator(1800), MaxValueValidator(timezone.now().year)])
+	ty_const = models.CharField("Type of Construction", max_length=50, choices=TYP_CHOICE)
 	bl_use = models.CharField("Building Use",max_length = 50, choices=BLD_USE)
 	op_bl_use = models.CharField("If Others, Specify",max_length=50, blank=True, null=True)
 	acc_level = models.CharField("Access Level",max_length = 10, choices=ACCESS_CHOICES)
@@ -328,13 +334,15 @@ class MS_Building(models.Model):
 		if self.uniq is None:
 			self.uniq = MS_Building.objects.all().count() + 1
 
-		return super(RC_Building, self).save(*args, **kwargs)
+		self.perf_score = 10
+
+		return super(MS_Building, self).save(*args, **kwargs)
 	
 	def __str__(self):
 		return self.bl_id
 
 	def clean(self):
-		cleaned_data = super(RC_Building, self).clean()
+		cleaned_data = super(MS_Building, self).clean()
 		if self.yr_aval is False and self.yr_constr is None:
 			raise ValidationError("Please Enter the Year of Construction")
 
@@ -358,7 +366,7 @@ class HY_Building(models.Model):
 	gps_y = models.DecimalField("Longtitude",max_digits = 9, decimal_places = 7)
 	oc_day = models.DecimalField("Day", max_digits = 10, decimal_places = 0, validators=[MinValueValidator(0)], blank=True, null=True)
 	oc_night = models.DecimalField("Night", max_digits = 10, decimal_places =0, validators=[MinValueValidator(0)], null=True, blank=True)
-	oc_navl = models.BooleanField("Occupancy Data Not Available?")
+	oc_navl = models.BooleanField("Not Available?")
 	no_floor = models.DecimalField("No. of Floors", max_digits = 2, decimal_places = 0, validators=[MinValueValidator(0)], null=True)
 	bas_prsnt = models.PositiveIntegerField("Basement",choices=FEAT_CHOICE)
 	yr_constr = models.DecimalField("Year of Construction",null=True, max_digits = 4, decimal_places = 0, validators=[MinValueValidator(1800), MaxValueValidator(timezone.now().year)], blank=True)
