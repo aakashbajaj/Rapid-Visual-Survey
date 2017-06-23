@@ -202,7 +202,7 @@ def MS_Score(bd):
 	# Pounding
 	if bd.cnt_bld is 0:
 		bd.pnding = 0
-	elif bd.pr_qlt = 1
+	elif bd.pr_qlt is 1:
 		bd.pnding = 2
 	else:
 		bd.pnding = 1
