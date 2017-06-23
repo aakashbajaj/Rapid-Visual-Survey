@@ -73,6 +73,12 @@ BOOL_CHOICE = (
 	(0, "No")
 )
 
+PND_CHOICE = (
+	(0, "Absent"),
+	(1, "Normal Apparent Condition of Adjacent Building"),
+	(2, "Poor Apparent Condition of Adjacent Building")
+)
+
 
 def RC_score(bd):
 
@@ -153,6 +159,7 @@ def RC_score(bd):
 	bsmt = bd.bas_prsnt*bas_prsnt_f[flr]
 
 	vs = sft + vrt + plir + hvyov + apqlty + shrt_clm + pound + soilcn + frmact + bsmt
+	
 	perf_sc = base_score + vs
 
 	return perf_sc
@@ -163,6 +170,8 @@ def MS_Score(bd):
 	# Structural Irregularity
 	if bd.lck_wll is 1 or bd.hvy_ovh is 1 or bd.re_crn is 1 or bd.crn_bld is 1:
 		bd.str_irr = 1
+	else:
+		bd.str_irr = 0
 
 	# Apparent Quality
 	if bd.ql_mat is 2 and bd.maintc is 2:
@@ -175,7 +184,34 @@ def MS_Score(bd):
 	# Diaphragm Action
 	if bd.ab_diap is 1 or bd.lrg_cut is 1:
 		bd.diap_ab = 1
+	else:
+		bd.diap_ab = 0
 
+	# Horizontal Bands
+	if bd.plnt_lvl is 1 or bd.lntl_lvl is 1 or bd.sill_lvl is 1 or bd.roof_lvl is 1:
+		bd.hrz_bnd = 1
+	else:
+		bd.hrz_bnd = 0
+
+	# Arches
+	if bd.arches is 1 or bd.jck_roof is 1:
+		bd.arch = 1
+	else:
+		bd.arch = 0
+
+	# Pounding
+	if bd.cnt_bld is 0:
+		bd.pnding = 0
+	elif bd.pr_qlt = 1
+		bd.pnding = 2
+	else:
+		bd.pnding = 1
+
+	# Rubble Wall Masonary
+	if bd.thk_wll is 1 or bd.rnd_stn is 1 or bd.hvy_roof is 1:
+		bd.rub_wll = 1
+	else:
+		bd.rub_wll = 0
 
 
 	buil_flr = int(bd.no_floor)
@@ -196,7 +232,27 @@ def MS_Score(bd):
 
 	base_score = base_table[flr][bd.s_zone]
 
-	pnding_f = {1:0, 3:-2, 4:-3, 5:-5, 6:-5}
+	orn_opn_f = {1:-2, 3:-5, 4:-5, 5:-5}
+	pnding_f = {1:0, 3:-3, 4:-5, 5:-5}
+	diap_ac_f = {1:-10, 3:-15, 4:-15, 5:-15}
+
+	strirr = bd.str_irr * (-10)
+	apqlty = bd.ap_qlt * (-10)
+	soilcn = bd.soil_cn * (10)
+	pound = bd.pnding * pnding_f[flr]
+	wlopng = bd.prt_opn * (-5)
+	irropn = bd.irr_opn * orn_opn_f[flr]
+	diapac = bd.diap_ab * diap_ac_f[flr]
+	hrzbnd = bd.hrz_bnd * (20)
+	archf = bd.arch * (-10)
+	rublwl = bd.rub_wll * (-15)
+
+	vs = strirr + apqlty + soilcn + pound + wlopng + irropn + diapac + hrzbnd + archf + rublwl
+
+	perf_sc = base_score + vs
+
+	return perf_sc
+
 
 class Team(models.Model):
 	name = models.CharField(max_length = 2, unique = True)
@@ -399,9 +455,9 @@ class MS_Building(models.Model):
 	ql_mat = models.PositiveIntegerField("Apparent Quality of Construction and Materials", choices=QUAL_CHOICE)
 	maintc = models.PositiveIntegerField("Maintainence", choices=QUAL_CHOICE)
 
-	pnding = models.PositiveIntegerField("Pounding", choices=FEAT_CHOICE, blank=True)
+	pnding = models.PositiveIntegerField("Pounding", choices=PND_CHOICE, blank=True)
 	# Pounding
-	un_flr = models.PositiveIntegerField("Unaligned Floors", choices=FEAT_CHOICE)
+	cnt_bld = models.PositiveIntegerField("Contiguous Building", choices=FEAT_CHOICE)
 	pr_qlt = models.PositiveIntegerField("Poor Apparent Quality of Adjacent Buildings", choices=FEAT_CHOICE)
 
 	soil_cn = models.PositiveIntegerField("Soil Condition", choices=SOIL_CHOICE)
@@ -438,7 +494,7 @@ class MS_Building(models.Model):
 		if self.uniq is None:
 			self.uniq = MS_Building.objects.all().count() +  RC_Building.objects.all().count() + HY_Building.objects.all().count() + 1
 
-		self.perf_score = 10
+		self.perf_score = MS_Score(self)
 
 		return super(MS_Building, self).save(*args, **kwargs)
 	
