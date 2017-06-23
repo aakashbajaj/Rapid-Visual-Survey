@@ -28,11 +28,6 @@ BLD_USE = (
 	('Others','Others')
 )
 
-BASM_CHOICE = (
-	('P', "Presesnt"),
-	('A', "Absent")
-)
-
 FEAT_CHOICE = (
 	(0, "Absent"),
 	(1, "Present")
@@ -65,6 +60,17 @@ IRR_CHOICE = (
 TYP_CHOICE = (
 	("Brick Masonary", "Brick Masonary"),
 	("Composite", "Composite")
+)
+
+OPENING_CHOICE = (
+	(0, "Small (< 1/3)"),
+	(1, "Moderate (1/3 to 2/3)"),
+	(2, "Large (> 2/3)")
+)
+
+BOOL_CHOICE = (
+	(1, "Yes"),
+	(0, "No")
 )
 
 
@@ -318,6 +324,64 @@ class MS_Building(models.Model):
 
 	# Performance Score
 	perf_score = models.IntegerField("Performance Score", blank=True)
+
+	str_irr = models.PositiveIntegerField("Structural Irregularities", blank=True, choices=FEAT_CHOICE)
+	# Structural Irregularities
+	lck_wll = models.PositiveIntegerField("Lack of Adequate Walls in both Orthogonal Directions", choices=FEAT_CHOICE)
+	hvy_ovh = models.PositiveIntegerField("Heavy Overhangs", choices=FEAT_CHOICE)
+	re_crn = models.PositiveIntegerField("Re-entrant Corners", choices=FEAT_CHOICE)
+	crn_bld = models.PositiveIntegerField("Corner Building", choices=FEAT_CHOICE)
+
+	prt_opn = models.PositiveIntegerField("Percentage of Openings", choices=OPENING_CHOICE)
+	# Openings
+	irr_opn = models.PositiveIntegerField("Irregularly Placed Openings", choices=FEAT_CHOICE)
+	opn_crn = models.PositiveIntegerField("Openings at Corners of Bearing Wall Interactions", choices=FEAT_CHOICE)
+
+	diap_ac = models.PositiveIntegerField("Diaphragm Action", choices=FEAT_CHOICE, blank=True)
+	# Diaphragm Action
+	ab_diap = models.PositiveIntegerField("Absence of Diaphragms" choices=BOOL_CHOICE)
+	lrg_cut = models.PositiveIntegerField("Large Cut-outs in Diaphragm", choices=FEAT_CHOICE)
+
+	hrz_bnd = models.PositiveIntegerField("Horizontal Bands", choices=FEAT_CHOICE, blank=True)
+	# Horizontal Bands
+	plnt_lvl = models.PositiveIntegerField("Plinth Level", choices=FEAT_CHOICE)
+	lntl_lvl = models.PositiveIntegerField("Lintel Level", choices=FEAT_CHOICE)
+	sill_lvl = models.PositiveIntegerField("Sill Level", choices=FEAT_CHOICE)
+	roof_lvl = models.PositiveIntegerField("Roof Level", choices=FEAT_CHOICE)
+
+	arch = models.PositiveIntegerField("Arches", choices=FEAT_CHOICE, blank=True)
+	# Arches
+	arches = models.PositiveIntegerField("Arches", choices=FEAT_CHOICE)
+	jck_roof = models.PositiveIntegerField("Jack Arch Roofs", choices=FEAT_CHOICE)
+
+	ap_qlt = models.PositiveIntegerField("Apparent Quality", choices=QUAL_CHOICE, blank=True)
+	# Apparent Quality
+	ql_mat = models.PositiveIntegerField("Apparent Quality of Construction and Materials", choices=QUAL_CHOICE)
+	maintc = models.PositiveIntegerField("Maintainence", choices=QUAL_CHOICE)
+
+	pnding = models.PositiveIntegerField("Pounding", choices=FEAT_CHOICE, blank=True)
+	# Pounding
+	un_flr = models.PositiveIntegerField("Unaligned Floors", choices=FEAT_CHOICE)
+	pr_qlt = models.PositiveIntegerField("Poor Apparent Quality of Adjacent Buildings", choices=FEAT_CHOICE)
+
+	soil_cn = models.PositiveIntegerField("Soil Condition", choices=SOIL_CHOICE)
+
+	rub_wll = models.PositiveIntegerField("Random Rubble Stone Masonary", choices=FEAT_CHOICE, blank=True)
+	# Random Rubble Stone Masonary
+	thk_wll = models.PositiveIntegerField("Thick Walls 600mm or Above", choices=FEAT_CHOICE, default=0)
+	rnd_stn = models.PositiveIntegerField("Use of Rounded Stone", choices=FEAT_CHOICE, default=0)
+	hvy_roof = models.PositiveIntegerField("Heavy Roofs on URRM Walls", choices=FEAT_CHOICE, default=0)
+
+	# Falling Hazards
+	rf_sign = models.NullBooleanField("Marquees/Hoardings/Roof Signs", default=False)
+	ac_grl = models.NullBooleanField("AC Units/Grillwork", default=False)
+	el_prp = models.NullBooleanField("Elaborate Parapets", default=False)
+	hv_elf = models.NullBooleanField("Heavy Elevation Features", default=False)
+	hv_cnp = models.NullBooleanField("Heavy Canopies", default=False)
+	sb_bal = models.NullBooleanField("Substantial Balconies", default=False)
+	hv_cld = models.NullBooleanField("Heavy Cladding", default=False)
+	str_gl = models.NullBooleanField("Structural Glazing", default=False)
+
 
 	def save(self, *args, **kwargs):
 
