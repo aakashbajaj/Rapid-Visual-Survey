@@ -256,6 +256,101 @@ def MS_Score(bd):
 	return perf_sc
 
 
+
+def HY_Score(bd):
+
+	# Structural Irregularity
+	if bd.lck_wll is 1 or bd.hvy_ovh is 1 or bd.re_crn is 1 or bd.crn_bld is 1:
+		bd.str_irr = 1
+	else:
+		bd.str_irr = 0
+
+	# Apparent Quality
+	if bd.ql_mat is 2 and bd.maintc is 2:
+		bd.ap_qlt = 2
+	elif bd.ql_mat is 0 and bd.maintc is 0:
+		bd.ap_qlt = 0
+	else:
+		bd.ap_qlt = 1
+
+	# Diaphragm Action
+	if bd.ab_diap is 1 or bd.lrg_cut is 1:
+		bd.diap_ab = 1
+	else:
+		bd.diap_ab = 0
+
+	# Horizontal Bands
+	if bd.plnt_lvl is 1 or bd.lntl_lvl is 1 or bd.sill_lvl is 1 or bd.roof_lvl is 1:
+		bd.hrz_bnd = 1
+	else:
+		bd.hrz_bnd = 0
+
+	# Arches
+	if bd.arches is 1 or bd.jck_roof is 1:
+		bd.arch = 1
+	else:
+		bd.arch = 0
+
+	# Pounding
+	if bd.cnt_bld is 0:
+		bd.pnding = 0
+	elif bd.pr_qlt is 1:
+		bd.pnding = 2
+	else:
+		bd.pnding = 1
+
+	# Rubble Wall Masonary
+	if bd.thk_wll is 1 or bd.rnd_stn is 1 or bd.hvy_roof is 1:
+		bd.rub_wll = 1
+	else:
+		bd.rub_wll = 0
+
+
+	buil_flr = int(bd.no_floor)
+
+	if buil_flr is 2:
+		flr = 1
+	elif buil_flr > 5:
+		flr = 5
+	else:
+		flr = buil_flr
+
+	base_table = {
+		 1: {1:150, 2:130, 3:100},
+		 3: {1:125, 2:110, 3:85},
+		 4: {1:110, 2:90, 3:70},
+		 5: {1:70, 2:60, 3:50}
+	}
+
+	base_score = base_table[flr][bd.s_zone]
+
+	orn_opn_f = {1:-2, 3:-5, 4:-5, 5:-5}
+	pnding_f = {1:0, 3:-3, 4:-5, 5:-5}
+	diap_ac_f = {1:-10, 3:-15, 4:-15, 5:-15}
+	bas_prsnt_f = {1:0, 3:3, 4:4, 5:5}
+
+	strirr = bd.str_irr * (-10)
+	apqlty = bd.ap_qlt * (-10)
+	soilcn = bd.soil_cn * (10)
+	pound = bd.pnding * pnding_f[flr]
+	wlopng = bd.prt_opn * (-5)
+	irropn = bd.irr_opn * orn_opn_f[flr]
+	diapac = bd.diap_ab * diap_ac_f[flr]
+	hrzbnd = bd.hrz_bnd * (20)
+	archf = bd.arch * (-10)
+	rublwl = bd.rub_wll * (-15)
+	bsmnt = bd.bas_prsnt * bas_prsnt_f[flr]
+
+	hybrd = bd.hyb_act * (-2)
+
+	vs = strirr + apqlty + soilcn + pound + wlopng + irropn + diapac + hrzbnd + archf + rublwl + bsmnt + hybrd
+
+	perf_sc = base_score + vs
+
+	return perf_sc
+
+
+
 class Team(models.Model):
 	name = models.CharField(max_length = 2, unique = True)
 	mem_1 = models.CharField("Member 1",max_length = 50, blank = False)
@@ -519,7 +614,7 @@ class MS_Building(models.Model):
 		verbose_name_plural = "Masonary Buildings"
 
 class HY_Building(models.Model):
-	# Basic Info
+	## Basic Info
 	uniq = models.PositiveIntegerField("Unique ID", blank=True, null=True)
 	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING)
 	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
@@ -551,6 +646,66 @@ class HY_Building(models.Model):
 	# Performance Score
 	perf_score = models.IntegerField("Performance Score", blank=True)
 
+	hyb_act = models.IntegerField("Hybrid Action", choices=FRM_CHOICE)
+
+	str_irr = models.PositiveIntegerField("Structural Irregularities", blank=True, choices=FEAT_CHOICE)
+	# Structural Irregularities
+	lck_wll = models.PositiveIntegerField("Lack of Adequate Walls in both Orthogonal Directions", choices=FEAT_CHOICE)
+	hvy_ovh = models.PositiveIntegerField("Heavy Overhangs", choices=FEAT_CHOICE)
+	re_crn = models.PositiveIntegerField("Re-entrant Corners", choices=FEAT_CHOICE)
+	crn_bld = models.PositiveIntegerField("Corner Building", choices=FEAT_CHOICE)
+
+	prt_opn = models.PositiveIntegerField("Percentage of Openings", choices=OPENING_CHOICE)
+	# Openings
+	irr_opn = models.PositiveIntegerField("Irregularly Placed Openings", choices=FEAT_CHOICE)
+	opn_crn = models.PositiveIntegerField("Openings at Corners of Bearing Wall Interactions", choices=FEAT_CHOICE)
+
+	diap_ab = models.PositiveIntegerField("Diaphragm Action Absent?", choices=BOOL_CHOICE, blank=True)
+	# Diaphragm Action
+	ab_diap = models.PositiveIntegerField("Absence of Diaphragms", choices=BOOL_CHOICE, default=0)
+	lrg_cut = models.PositiveIntegerField("Large Cut-outs in Diaphragm", choices=FEAT_CHOICE, default=0)
+
+	hrz_bnd = models.PositiveIntegerField("Horizontal Bands", choices=FEAT_CHOICE, blank=True)
+	# Horizontal Bands
+	plnt_lvl = models.PositiveIntegerField("Plinth Level", choices=FEAT_CHOICE)
+	lntl_lvl = models.PositiveIntegerField("Lintel Level", choices=FEAT_CHOICE)
+	sill_lvl = models.PositiveIntegerField("Sill Level", choices=FEAT_CHOICE)
+	roof_lvl = models.PositiveIntegerField("Roof Level", choices=FEAT_CHOICE)
+
+	arch = models.PositiveIntegerField("Arches", choices=FEAT_CHOICE, blank=True)
+	# Arches
+	arches = models.PositiveIntegerField("Arches", choices=FEAT_CHOICE)
+	jck_roof = models.PositiveIntegerField("Jack Arch Roofs", choices=FEAT_CHOICE)
+
+	ap_qlt = models.PositiveIntegerField("Apparent Quality", choices=QUAL_CHOICE, blank=True)
+	# Apparent Quality
+	ql_mat = models.PositiveIntegerField("Apparent Quality of Construction and Materials", choices=QUAL_CHOICE)
+	maintc = models.PositiveIntegerField("Maintainence", choices=QUAL_CHOICE)
+
+	pnding = models.PositiveIntegerField("Pounding", choices=PND_CHOICE, blank=True)
+	# Pounding
+	cnt_bld = models.PositiveIntegerField("Contiguous Building", choices=FEAT_CHOICE)
+	pr_qlt = models.PositiveIntegerField("Poor Apparent Quality of Adjacent Buildings", choices=FEAT_CHOICE)
+
+	soil_cn = models.PositiveIntegerField("Soil Condition", choices=SOIL_CHOICE)
+
+	rub_wll = models.PositiveIntegerField("Random Rubble Stone Masonary", choices=FEAT_CHOICE, blank=True)
+	# Random Rubble Stone Masonary
+	thk_wll = models.PositiveIntegerField("Thick Walls 600mm or Above", choices=FEAT_CHOICE, default=0)
+	rnd_stn = models.PositiveIntegerField("Use of Rounded Stone", choices=FEAT_CHOICE, default=0)
+	hvy_roof = models.PositiveIntegerField("Heavy Roofs on URRM Walls", choices=FEAT_CHOICE, default=0)
+
+	# Falling Hazards
+	rf_sign = models.NullBooleanField("Marquees/Hoardings/Roof Signs", default=False)
+	ac_grl = models.NullBooleanField("AC Units/Grillwork", default=False)
+	el_prp = models.NullBooleanField("Elaborate Parapets", default=False)
+	hv_elf = models.NullBooleanField("Heavy Elevation Features", default=False)
+	hv_cnp = models.NullBooleanField("Heavy Canopies", default=False)
+	sb_bal = models.NullBooleanField("Substantial Balconies", default=False)
+	hv_cld = models.NullBooleanField("Heavy Cladding", default=False)
+	str_gl = models.NullBooleanField("Structural Glazing", default=False)
+
+
 	def save(self, *args, **kwargs):
 
 		# Assigning Date and Time
@@ -566,13 +721,15 @@ class HY_Building(models.Model):
 		if self.uniq is None:
 			self.uniq = MS_Building.objects.all().count() +  RC_Building.objects.all().count() + HY_Building.objects.all().count() + 1
 
-		return super(HY_Building, self).save(*args, **kwargs)
+		self.perf_score = HY_Score(self)
+
+		return super(MS_Building, self).save(*args, **kwargs)
 	
 	def __str__(self):
 		return self.bl_id
 
 	def clean(self):
-		cleaned_data = super(RC_Building, self).clean()
+		cleaned_data = super(HY_Building, self).clean()
 		if self.yr_aval is False and self.yr_constr is None:
 			raise ValidationError("Please Enter the Year of Construction")
 
