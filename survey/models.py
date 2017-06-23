@@ -63,9 +63,9 @@ TYP_CHOICE = (
 )
 
 OPENING_CHOICE = (
-	(0, "Small (< 1/3)"),
+	(0, "Small (<1/3)"),
 	(1, "Moderate (1/3 to 2/3)"),
-	(2, "Large (> 2/3)")
+	(2, "Large (>2/3)")
 )
 
 BOOL_CHOICE = (
@@ -260,7 +260,7 @@ class RC_Building(models.Model):
 		if self.dt_tkn is None:
 			self.dt_tkn = timezone.now()
 
-		tm_cnt = RC_Building.objects.filter(team = self.team).count() + 1
+		tm_cnt = RC_Building.objects.filter(team = self.team).count() + MS_Building.objects.filter(team = self.team).count() + HY_Building.objects.filter(team = self.team).count() + 1
 		# Assigning ID to building
 		if self.bl_id is None:
 			self.bl_id = self.team.name + '-' + str(tm_cnt)
@@ -389,7 +389,7 @@ class MS_Building(models.Model):
 		if self.dt_tkn is None:
 			self.dt_tkn = timezone.now()
 
-		tm_cnt = MS_Building.objects.filter(team = self.team).count() + 1
+		tm_cnt = RC_Building.objects.filter(team = self.team).count() + MS_Building.objects.filter(team = self.team).count() + HY_Building.objects.filter(team = self.team).count() + 1
 
 		# Assigning ID to building
 		if self.bl_id is None:
@@ -459,7 +459,7 @@ class HY_Building(models.Model):
 		if self.dt_tkn is None:
 			self.dt_tkn = timezone.now()
 
-		tm_cnt = HY_Building.objects.filter(team = self.team).count() + 1
+		tm_cnt = RC_Building.objects.filter(team = self.team).count() + MS_Building.objects.filter(team = self.team).count() + HY_Building.objects.filter(team = self.team).count() + 1
 
 		# Assigning ID to building
 		if self.bl_id is None:
