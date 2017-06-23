@@ -339,7 +339,7 @@ class MS_Building(models.Model):
 
 	diap_ac = models.PositiveIntegerField("Diaphragm Action", choices=FEAT_CHOICE, blank=True)
 	# Diaphragm Action
-	ab_diap = models.PositiveIntegerField("Absence of Diaphragms" choices=BOOL_CHOICE)
+	ab_diap = models.PositiveIntegerField("Absence of Diaphragms", choices=BOOL_CHOICE)
 	lrg_cut = models.PositiveIntegerField("Large Cut-outs in Diaphragm", choices=FEAT_CHOICE)
 
 	hrz_bnd = models.PositiveIntegerField("Horizontal Bands", choices=FEAT_CHOICE, blank=True)
