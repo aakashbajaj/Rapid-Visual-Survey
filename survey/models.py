@@ -6,6 +6,8 @@ from django.utils import timezone
 
 from django.core.validators import MinValueValidator, MaxValueValidator, URLValidator
 from django.core.exceptions import ValidationError
+
+import urllib2
 # Create your models here.
 
 # Choices for all fields
@@ -78,6 +80,35 @@ PND_CHOICE = (
 	(1, "Normal Apparent Condition of Adjacent Building"),
 	(2, "Poor Apparent Condition of Adjacent Building")
 )
+
+def getGPScoord(bd):
+
+	map_str = bd.gps_str
+
+	p1 = map_str.find('http')
+
+	mp_url = map_str[p1:]
+
+	pg = urllib2.urlopen(mp_url)
+	newstr = pg.read()
+	newstr = newstr.decode("utf8")
+
+	k1 = newstr.find("cacheResponse(")
+	ext_str = newstr[k1:k1+100]
+
+	k2 = ext_str.find(']')
+
+	coord = ext_str[17:k2]
+	coord = coord.split(',')
+
+	gpsy = float(coord[1])
+	gpsx = float(coord[2])
+
+	psx = round(gpsx, 6)
+	gpsy = round(gpsy, 6)
+
+	bd.gps_x = gpsx
+	bd.gps_y = gpsy
 
 
 def RC_score(bd):
@@ -368,8 +399,9 @@ class RC_Building(models.Model):
 	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING)
 	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
-	gps_x = models.DecimalField("Latitude",max_digits = 9, decimal_places = 7)
-	gps_y = models.DecimalField("Longtitude",max_digits = 9, decimal_places = 7)
+	gps_str = models.CharField("Enter Copied Location String", max_length=200)
+	gps_x = models.DecimalField("Latitude",max_digits = 9, decimal_places = 7, blank=True)
+	gps_y = models.DecimalField("Longtitude",max_digits = 9, decimal_places = 7, blank=True)
 	oc_day = models.DecimalField("Day", max_digits = 10, decimal_places = 0, validators=[MinValueValidator(0)], blank=True, null=True)
 	oc_night = models.DecimalField("Night", max_digits = 10, decimal_places =0, validators=[MinValueValidator(0)], null=True, blank=True)
 	oc_navl = models.BooleanField("Not Available?")
@@ -449,6 +481,10 @@ class RC_Building(models.Model):
 
 	def save(self, *args, **kwargs):
 
+		# Get GPS Coordinates
+		if self.gps_str is not None:
+			getGPScoord(self)
+
 		# Assigning Date and Time
 		if self.dt_tkn is None:
 			self.dt_tkn = timezone.now()
@@ -490,8 +526,9 @@ class MS_Building(models.Model):
 	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING)
 	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
-	gps_x = models.DecimalField("Latitude",max_digits = 9, decimal_places = 7)
-	gps_y = models.DecimalField("Longtitude",max_digits = 9, decimal_places = 7)
+	gps_str = models.CharField("Enter Copied Location String", max_length=200)
+	gps_x = models.DecimalField("Latitude",max_digits = 9, decimal_places = 7, blank=True)
+	gps_y = models.DecimalField("Longtitude",max_digits = 9, decimal_places = 7, blank=True)
 	oc_day = models.DecimalField("Day", max_digits = 10, decimal_places = 0, validators=[MinValueValidator(0)], blank=True, null=True)
 	oc_night = models.DecimalField("Night", max_digits = 10, decimal_places =0, validators=[MinValueValidator(0)], null=True, blank=True)
 	oc_navl = models.BooleanField("Not Available?")
@@ -578,6 +615,10 @@ class MS_Building(models.Model):
 
 	def save(self, *args, **kwargs):
 
+		# Get GPS Coordinates
+		if self.gps_str is not None:
+			getGPScoord(self)
+
 		# Assigning Date and Time
 		if self.dt_tkn is None:
 			self.dt_tkn = timezone.now()
@@ -619,8 +660,9 @@ class HY_Building(models.Model):
 	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING)
 	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
-	gps_x = models.DecimalField("Latitude",max_digits = 9, decimal_places = 7)
-	gps_y = models.DecimalField("Longtitude",max_digits = 9, decimal_places = 7)
+	gps_str = models.CharField("Enter Copied Location String", max_length=200)
+	gps_x = models.DecimalField("Latitude",max_digits = 9, decimal_places = 7, blank=True)
+	gps_y = models.DecimalField("Longtitude",max_digits = 9, decimal_places = 7, blank=True)
 	oc_day = models.DecimalField("Day", max_digits = 10, decimal_places = 0, validators=[MinValueValidator(0)], blank=True, null=True)
 	oc_night = models.DecimalField("Night", max_digits = 10, decimal_places =0, validators=[MinValueValidator(0)], null=True, blank=True)
 	oc_navl = models.BooleanField("Not Available?")
@@ -707,6 +749,10 @@ class HY_Building(models.Model):
 
 
 	def save(self, *args, **kwargs):
+
+		# Get GPS Coordinates
+		if self.gps_str is not None:
+			getGPScoord(self)
 
 		# Assigning Date and Time
 		if self.dt_tkn is None:

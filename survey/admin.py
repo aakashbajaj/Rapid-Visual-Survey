@@ -18,7 +18,7 @@ class RCAdminSet(admin.ModelAdmin):
 
 		('Occupancy', {'fields':['oc_day','oc_night','oc_navl']}),
 
-		('GPS Coordinates', {'fields':['gps_x','gps_y']}),
+		('GPS Coordinates', {'fields':['gps_str','gps_x','gps_y']}),
 
 		('Soft Storey', {'fields':['op_prk','ab_prt','st_shp','tl_htg']}),
 
@@ -63,7 +63,7 @@ class MSAdminSet(admin.ModelAdmin):
 
 		('Occupancy', {'fields':['oc_day','oc_night','oc_navl']}),
 
-		('GPS Coordinates', {'fields':['gps_x','gps_y']}),
+		('GPS Coordinates', {'fields':['gps_str','gps_x','gps_y']}),
 
 		('Structural Irregularities', {'fields':['lck_wll', 'hvy_ovh', 're_crn', 'crn_bld']}),
 
@@ -110,7 +110,7 @@ class HYAdminSet(admin.ModelAdmin):
 
 		('Occupancy', {'fields':['oc_day','oc_night','oc_navl']}),
 
-		('GPS Coordinates', {'fields':['gps_x','gps_y']}),
+		('GPS Coordinates', {'fields':['gps_str','gps_x','gps_y']}),
 
 		('Hybrid Action', {'fields':['hyb_act']}),
 
