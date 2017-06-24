@@ -104,8 +104,8 @@ def getGPScoord(bd):
 	gpsy = float(coord[1])
 	gpsx = float(coord[2])
 
-	psx = round(gpsx, 6)
-	gpsy = round(gpsy, 6)
+	psx = round(gpsx, 7)
+	gpsy = round(gpsy, 7)
 
 	bd.gps_x = gpsx
 	bd.gps_y = gpsy
