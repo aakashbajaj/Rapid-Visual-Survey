@@ -399,7 +399,7 @@ class RC_Building(models.Model):
 	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING)
 	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
-	gps_str = models.CharField("Enter Copied Location String", max_length=200)
+	gps_str = models.CharField("Enter Copied Location String", max_length=200, blank=True)
 	gps_x = models.DecimalField("Latitude",max_digits = 9, decimal_places = 7, blank=True)
 	gps_y = models.DecimalField("Longtitude",max_digits = 9, decimal_places = 7, blank=True)
 	oc_day = models.DecimalField("Day", max_digits = 10, decimal_places = 0, validators=[MinValueValidator(0)], blank=True, null=True)
@@ -506,6 +506,10 @@ class RC_Building(models.Model):
 
 	def clean(self):
 		cleaned_data = super(RC_Building, self).clean()
+
+		if (self.gps_x is None or self.gps_y is None) and self.gps_str is None:
+			raise ValidationError("Enter GPS Data Correctly")
+
 		if self.yr_aval is False and self.yr_constr is None:
 			raise ValidationError("Please Enter the Year of Construction")
 
@@ -526,7 +530,7 @@ class MS_Building(models.Model):
 	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING)
 	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
-	gps_str = models.CharField("Enter Copied Location String", max_length=200)
+	gps_str = models.CharField("Enter Copied Location String", max_length=200, blank=True)
 	gps_x = models.DecimalField("Latitude",max_digits = 9, decimal_places = 7, blank=True)
 	gps_y = models.DecimalField("Longtitude",max_digits = 9, decimal_places = 7, blank=True)
 	oc_day = models.DecimalField("Day", max_digits = 10, decimal_places = 0, validators=[MinValueValidator(0)], blank=True, null=True)
@@ -641,6 +645,10 @@ class MS_Building(models.Model):
 
 	def clean(self):
 		cleaned_data = super(MS_Building, self).clean()
+
+		if (self.gps_x is None or self.gps_y is None) and self.gps_str is None:
+			raise ValidationError("Enter GPS Data Correctly")
+
 		if self.yr_aval is False and self.yr_constr is None:
 			raise ValidationError("Please Enter the Year of Construction")
 
@@ -660,7 +668,7 @@ class HY_Building(models.Model):
 	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING)
 	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
-	gps_str = models.CharField("Enter Copied Location String", max_length=200)
+	gps_str = models.CharField("Enter Copied Location String", max_length=200, blank=True)
 	gps_x = models.DecimalField("Latitude",max_digits = 9, decimal_places = 7, blank=True)
 	gps_y = models.DecimalField("Longtitude",max_digits = 9, decimal_places = 7, blank=True)
 	oc_day = models.DecimalField("Day", max_digits = 10, decimal_places = 0, validators=[MinValueValidator(0)], blank=True, null=True)
