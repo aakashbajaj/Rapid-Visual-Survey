@@ -507,7 +507,7 @@ class RC_Building(models.Model):
 	def clean(self):
 		cleaned_data = super(RC_Building, self).clean()
 
-		if (self.gps_x is None or self.gps_y is None) and self.gps_str is None:
+		if (self.gps_x is None or self.gps_y is None) and self.gps_str is "":
 			raise ValidationError("Enter GPS Data Correctly")
 
 		if self.yr_aval is False and self.yr_constr is None:
@@ -644,9 +644,10 @@ class MS_Building(models.Model):
 		return self.bl_id
 
 	def clean(self):
+		print self.gps_x is None
 		cleaned_data = super(MS_Building, self).clean()
 
-		if (self.gps_x is None or self.gps_y is None) and self.gps_str is None:
+		if (self.gps_x is None or self.gps_y is None) and self.gps_str is "":
 			raise ValidationError("Enter GPS Data Correctly")
 
 		if self.yr_aval is False and self.yr_constr is None:
@@ -786,7 +787,7 @@ class HY_Building(models.Model):
 
 		cleaned_data = super(HY_Building, self).clean()
 
-		if (self.gps_x is None or self.gps_y is None) and self.gps_str is None:
+		if (self.gps_x is None or self.gps_y is None) and self.gps_str is "":
 			raise ValidationError("Enter GPS Data Correctly")
 
 		if self.yr_aval is False and self.yr_constr is None:
