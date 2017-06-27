@@ -778,7 +778,7 @@ class HY_Building(models.Model):
 
 		self.perf_score = HY_Score(self)
 
-		return super(MS_Building, self).save(*args, **kwargs)
+		return super(HY_Building, self).save(*args, **kwargs)
 	
 	def __str__(self):
 		return self.bl_id
