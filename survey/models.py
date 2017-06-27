@@ -800,5 +800,5 @@ class HY_Building(models.Model):
 			raise ValidationError("Enter Other Building Use")
 
 	class Meta:
-		verbose_name = "Hybrid Building"
-		verbose_name_plural = "Hybrid Buildings"
+		verbose_name = "Composite Building"
+		verbose_name_plural = "Composite Buildings"
