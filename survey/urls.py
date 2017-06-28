@@ -1,7 +1,10 @@
 from django.conf.urls import url
+from django.contrib import admin
 
-from . import views
+from views import *
+
 
 urlpatterns = [
-	url(r'^$', views.index, name='index'),
+	url(r'^$', index, name='index'),
+	url(r'^excel/$', BuildingExcel, name='excel')
 ]
