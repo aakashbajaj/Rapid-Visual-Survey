@@ -29,7 +29,7 @@ def BuildingExcel(request, **kwargs):
 	generated = strftime("%d-%m-%Y %H:%M:%S IST/India", localtime())
 	worksheet.write(0,1, generated)
 
-	worksheet.write(1,0, "Unique ID")
+	worksheet.write(1,0, "Changed")
 	worksheet.write(1,1, "Building ID")
 	worksheet.write(1,2, "Address")
 	worksheet.write(1,3, "Type")
