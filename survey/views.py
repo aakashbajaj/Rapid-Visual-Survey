@@ -11,7 +11,7 @@ from models import *
 
 import csv
 import xlsxwriter, StringIO
-from time import strftime, gmtime
+from time import strftime, gmtime, localtime
 
 def index(request):
 	return HttpResponse("Hello");
@@ -26,7 +26,7 @@ def BuildingExcel(request, **kwargs):
 	worksheet = workbook.add_worksheet('New-SpreadSheet')
 	date_format = workbook.add_format({'num_format':'mmmm dd yyyy'})
 	worksheet.write(0, 0, "Generated:")
-	generated = strftime("%d-%m-%Y %H:%M:%S UTC", gmtime())
+	generated = strftime("%d-%m-%Y %H:%M:%S IST/India", localtime())
 	worksheet.write(0,1, generated)
 
 	worksheet.write(1,0, "Unique ID")
