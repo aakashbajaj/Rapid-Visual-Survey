@@ -26,7 +26,7 @@ def BuildingExcel(request, **kwargs):
 	worksheet = workbook.add_worksheet('New-SpreadSheet')
 	date_format = workbook.add_format({'num_format':'mmmm dd yyyy'})
 	worksheet.write(0, 0, "Generated:")
-	generated = strftime("%d-%m-%Y %H:%M:%S IST/India", localtime())
+	generated = strftime("%d-%m-%Y %H:%M:%S IST", localtime())
 	worksheet.write(0,1, generated)
 
 	worksheet.write(1,0, "Unique ID")
