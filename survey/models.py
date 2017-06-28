@@ -372,7 +372,7 @@ def HY_Score(bd):
 	rublwl = bd.rub_wll * (-15)
 	bsmnt = bd.bas_prsnt * bas_prsnt_f[flr]
 
-	vs = strirr + apqlty + soilcn + pound + wlopng + irropn + diapac + hrzbnd + archf + rublwl + bsmnt + hybrd
+	vs = strirr + apqlty + soilcn + pound + wlopng + irropn + diapac + hrzbnd + archf + rublwl + bsmnt
 
 	perf_sc = base_score + vs
 
