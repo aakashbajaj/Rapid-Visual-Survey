@@ -480,8 +480,9 @@ class RC_Building(models.Model):
 	def save(self, *args, **kwargs):
 
 		# Get GPS Coordinates
-		if self.gps_str is not "":
-			getGPScoord(self)
+		if (self.gps_x is None or self.gps_y is None):
+			if self.gps_str is not "":
+				getGPScoord(self)
 
 		# Assigning Date and Time
 		if self.dt_tkn is None:
@@ -618,8 +619,9 @@ class MS_Building(models.Model):
 	def save(self, *args, **kwargs):
 
 		# Get GPS Coordinates
-		if self.gps_str is not "":
-			getGPScoord(self)
+		if (self.gps_x is None or self.gps_y is None):
+			if self.gps_str is not "":
+				getGPScoord(self)
 
 		# Assigning Date and Time
 		if self.dt_tkn is None:
@@ -758,8 +760,9 @@ class HY_Building(models.Model):
 	def save(self, *args, **kwargs):
 
 		# Get GPS Coordinates
-		if self.gps_str is not "":
-			getGPScoord(self)
+		if (self.gps_x is None or self.gps_y is None):
+			if self.gps_str is not "":
+				getGPScoord(self)
 
 		# Assigning Date and Time
 		if self.dt_tkn is None:
