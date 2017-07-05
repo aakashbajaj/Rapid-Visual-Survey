@@ -412,6 +412,7 @@ class RC_Building(models.Model):
 	op_bl_use = models.CharField("If Others, Specify",max_length=50, blank=True, null=True)
 	acc_level = models.CharField("Access Level",max_length = 10, choices=ACCESS_CHOICES)
 	s_zone = models.PositiveIntegerField("Seismic Zone", choices=SEISMIC_ZONE)
+	comment = models.CharField("Comments", max_length=500, blank=True, null=True)
 	
 	# Date and Time Taken
 	dt_tkn = models.DateTimeField("Taken On", blank=True)
@@ -545,6 +546,7 @@ class MS_Building(models.Model):
 	op_bl_use = models.CharField("If Others, Specify",max_length=50, blank=True, null=True)
 	acc_level = models.CharField("Access Level",max_length = 10, choices=ACCESS_CHOICES)
 	s_zone = models.PositiveIntegerField("Seismic Zone", choices=SEISMIC_ZONE)
+	comment = models.CharField("Comments", max_length=500, blank=True, null=True)
 	
 	# Date and Time Taken
 	dt_tkn = models.DateTimeField("Taken On", blank=True)
@@ -684,6 +686,7 @@ class HY_Building(models.Model):
 	op_bl_use = models.CharField("If Others, Specify",max_length=50, blank=True, null=True)
 	acc_level = models.CharField("Access Level",max_length = 10, choices=ACCESS_CHOICES)
 	s_zone = models.PositiveIntegerField("Seismic Zone", choices=SEISMIC_ZONE)
+	comment = models.CharField("Comments", max_length=500, blank=True, null=True)
 	
 	# Date and Time Taken
 	dt_tkn = models.DateTimeField("Taken On", blank=True)

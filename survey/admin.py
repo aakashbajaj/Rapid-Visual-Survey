@@ -44,6 +44,8 @@ class RCAdminSet(admin.ModelAdmin):
 
 		('Performance Score', {'fields':['perf_score']}),
 
+		('Comments', {'fields':['comment']}),
+
 		('Signature', {'fields':['sign_url']})
 	]
 
@@ -88,6 +90,8 @@ class MSAdminSet(admin.ModelAdmin):
 		('Falling Hazards', {'fields':['rf_sign','ac_grl','el_prp','hv_elf','hv_cnp','sb_bal','hv_cld','str_gl']}),
 
 		('Performance Score', {'fields':['perf_score']}),
+
+		('Comments', {'fields':['comment']}),
 
 		('Signature', {'fields':['sign_url']})	
 
@@ -137,6 +141,8 @@ class HYAdminSet(admin.ModelAdmin):
 		('Falling Hazards', {'fields':['rf_sign','ac_grl','el_prp','hv_elf','hv_cnp','sb_bal','hv_cld','str_gl']}),
 
 		('Performance Score', {'fields':['perf_score']}),
+
+		('Comments', {'fields':['comment']}),
 
 		('Signature', {'fields':['sign_url']})	
 
