@@ -37,8 +37,6 @@ class RCAdminSet(admin.ModelAdmin):
 		('Pounding', {'fields':['un_flr','pr_qlt']}),
 
 		('Frame Action', {'fields':['frm_act']}),
-
-		('Building Features', {'fields':['soft_st','vrt_irr','pl_irr','hvy_ovh','ap_qlt','pnding']}),
 		
 		('Falling Hazards', {'fields':['rf_sign','ac_grl','el_prp','hv_elf','hv_cnp','sb_bal','hv_cld','str_gl']}),
 
@@ -49,7 +47,7 @@ class RCAdminSet(admin.ModelAdmin):
 		('Signature', {'fields':['sign_url']})
 	]
 
-	list_display = ('bl_id','dt_tkn')
+	list_display = ('bl_id','perf_score','dt_tkn')
 
 admin.site.register(RC_Building, RCAdminSet)
 
@@ -85,8 +83,6 @@ class MSAdminSet(admin.ModelAdmin):
 
 		('Soil Condition', {'fields':['soil_cn']}),
 
-		('Building Features', {'fields':['str_irr', 'diap_ab', 'hrz_bnd', 'arch', 'pnding', 'rub_wll']}),
-
 		('Falling Hazards', {'fields':['rf_sign','ac_grl','el_prp','hv_elf','hv_cnp','sb_bal','hv_cld','str_gl']}),
 
 		('Performance Score', {'fields':['perf_score']}),
@@ -97,7 +93,7 @@ class MSAdminSet(admin.ModelAdmin):
 
 	]
 
-	list_display = ('bl_id', 'dt_tkn')
+	list_display = ('bl_id','perf_score','dt_tkn')
 
 
 admin.site.register(MS_Building, MSAdminSet)
@@ -136,8 +132,6 @@ class HYAdminSet(admin.ModelAdmin):
 
 		('Soil Condition', {'fields':['soil_cn']}),
 
-		('Building Features', {'fields':['str_irr', 'diap_ab', 'hrz_bnd', 'arch', 'pnding', 'rub_wll']}),
-
 		('Falling Hazards', {'fields':['rf_sign','ac_grl','el_prp','hv_elf','hv_cnp','sb_bal','hv_cld','str_gl']}),
 
 		('Performance Score', {'fields':['perf_score']}),
@@ -148,6 +142,6 @@ class HYAdminSet(admin.ModelAdmin):
 
 	]
 
-	list_display = ('bl_id', 'dt_tkn')
+	list_display = ('bl_id','perf_score','dt_tkn')
 
 admin.site.register(HY_Building, HYAdminSet)
