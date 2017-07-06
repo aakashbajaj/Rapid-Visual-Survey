@@ -397,6 +397,7 @@ class RC_Building(models.Model):
 	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING)
 	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
+	city = models>CharField("City", max_length=200, default="Gandhinagar")
 	gps_str = models.CharField("Enter Copied Location String", max_length=200, blank=True)
 	gps_x = models.DecimalField("Latitude",max_digits = 9, decimal_places = 7, blank=True)
 	gps_y = models.DecimalField("Longtitude",max_digits = 9, decimal_places = 7, blank=True)
