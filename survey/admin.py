@@ -14,6 +14,9 @@ def recalculate(modeladmin, request, queryset):
 
 	recalculate.short_description = "Recalculate"
 
+# def script(modeladmin, request, queryset):
+# 	for bd in queryset:
+
 
 class RCAdminSet(admin.ModelAdmin):
 
