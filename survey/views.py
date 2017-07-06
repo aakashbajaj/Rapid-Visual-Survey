@@ -41,6 +41,8 @@ def BuildingExcel(request, **kwargs):
 	worksheet.write(1,8, "Night Occupancy", bold)
 	worksheet.write(1,9, "RVS Score", bold)
 	worksheet.write(1,10, "Basement", bold)
+	worksheet.write(1,11, "Heavy Overhangs", bold)
+	worksheet.write(1,12, "Pounding", bold)
 
 	for i, p in enumerate(rcbuilding):
 		worksheet.write(i+2,0, p.uniq)
@@ -54,6 +56,8 @@ def BuildingExcel(request, **kwargs):
 		worksheet.write(i+2,8, p.oc_night)
 		worksheet.write(i+2,9, p.perf_score)
 		worksheet.write(i+2,10, p.bas_prsnt)
+		worksheet.write(i+2,11, p.hvy_ovh)
+		worksheet.write(i+2,12, p.pnding)
 		k = i+1
 
 	for i, p in enumerate(msbuilding):
@@ -68,6 +72,8 @@ def BuildingExcel(request, **kwargs):
 		worksheet.write(k+i+2,8, p.oc_night)
 		worksheet.write(k+i+2,9, p.perf_score)
 		worksheet.write(k+i+2,10, p.bas_prsnt)
+		worksheet.write(k+i+2,11, p.hvy_ovh)
+		worksheet.write(k+i+2,12, p.pnding)
 		k2 = k+i+1
 
 	for i, p in enumerate(hybuilding):
@@ -82,6 +88,8 @@ def BuildingExcel(request, **kwargs):
 		worksheet.write(k2+i+2,8, p.oc_night)
 		worksheet.write(k2+i+2,9, p.perf_score)
 		worksheet.write(k2+i+2,10, p.bas_prsnt)
+		worksheet.write(k2+i+2,11, p.hvy_ovh)
+		worksheet.write(k2+i+2,12, p.pnding)
 
 	workbook.close()
 	filename = 'RVS.xlsx'
