@@ -122,6 +122,9 @@ class RC_Building(models.Model):
 
 	def save(self, *args, **kwargs):
 
+		p = self.addr.lower().index('sector')
+		self.plot_no = self.addr[:p].strip()
+
 		# Make Address
 		self.addr = self.plot_no + ' ' + self.locality + ' ' + self.city
 
@@ -270,6 +273,9 @@ class MS_Building(models.Model):
 		self.plot_no = self.addr[:p].strip()
 
 	def save(self, *args, **kwargs):
+
+		p = self.addr.lower().index('sector')
+		self.plot_no = self.addr[:p].strip()
 
 		# Make Address
 		self.addr = self.plot_no + ' ' + self.locality + ' ' + self.city
@@ -421,6 +427,9 @@ class HY_Building(models.Model):
 		self.plot_no = self.addr[:p].strip()
 
 	def save(self, *args, **kwargs):
+
+		p = self.addr.lower().index('sector')
+		self.plot_no = self.addr[:p].strip()
 
 		# Make Address
 		self.addr = self.plot_no + ' ' + self.locality + ' ' + self.city
