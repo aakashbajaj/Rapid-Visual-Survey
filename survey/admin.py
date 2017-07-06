@@ -20,7 +20,9 @@ class RCAdminSet(admin.ModelAdmin):
 
 		('Date and Time', {'fields':['dt_tkn']}),
 
-		('Basic Information', {'fields':['team','addr','no_floor','bas_prsnt','yr_constr', 'yr_aval','yr_extn','acc_level','bl_use','op_bl_use','s_zone',]}),
+		('Address', {'fields':['plot_no', 'locality', 'city', 'addr']}),
+
+		('Basic Information', {'fields':['team','no_floor','bas_prsnt','yr_constr', 'yr_aval','yr_extn','acc_level','bl_use','op_bl_use','s_zone',]}),
 
 		('Occupancy', {'fields':['oc_day','oc_night','oc_navl']}),
 
@@ -70,7 +72,9 @@ class MSAdminSet(admin.ModelAdmin):
 
 		('Date and Time', {'fields':['dt_tkn']}),
 
-		('Basic Information', {'fields':['team','addr','ty_const','no_floor','bas_prsnt','yr_constr', 'yr_aval','yr_extn','acc_level','bl_use','op_bl_use','s_zone']}),
+		('Address', {'fields':['plot_no', 'locality', 'city', 'addr']}),
+
+		('Basic Information', {'fields':['team','no_floor','bas_prsnt','yr_constr', 'yr_aval','yr_extn','acc_level','bl_use','op_bl_use','s_zone',]}),
 
 		('Occupancy', {'fields':['oc_day','oc_night','oc_navl']}),
 
@@ -122,7 +126,9 @@ class HYAdminSet(admin.ModelAdmin):
 
 		('Date and Time', {'fields':['dt_tkn']}),
 
-		('Basic Information', {'fields':['team','addr','no_floor','bas_prsnt','yr_constr', 'yr_aval','yr_extn','acc_level','bl_use','op_bl_use','s_zone']}),
+		('Address', {'fields':['plot_no', 'locality', 'city', 'addr']}),
+
+		('Basic Information', {'fields':['team','no_floor','bas_prsnt','yr_constr', 'yr_aval','yr_extn','acc_level','bl_use','op_bl_use','s_zone',]}),
 
 		('Occupancy', {'fields':['oc_day','oc_night','oc_navl']}),
 

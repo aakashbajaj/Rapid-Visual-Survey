@@ -7,378 +7,13 @@ from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator, URLValidator
 from django.core.exceptions import ValidationError
 
-import urllib2
-# Create your models here.
+from rc_score import *
+from ms_score import *
+from hy_score import *
 
-# Choices for all fields
-ACCESS_CHOICES = (
-	('FULL', 'FULL'),
-	('PARTIAL', 'PARTIAL'),
-	('NO', 'NO')
-)
+from choices import *
 
-SEISMIC_ZONE = (
-	( 1, 'II and III'),
-	( 2, 'IV'),
-	( 3, 'V')
-)
-
-BLD_USE = (
-	('Residential','Residential'),
-	('Commercial','Commercial'),
-	('Mixed','Mixed'),
-	('Others','Others')
-)
-
-FEAT_CHOICE = (
-	(0, "Absent"),
-	(1, "Present")
-)
-
-QUAL_CHOICE = (
-	(0,"Good"),
-	(1,"Moderate"),
-	(2,"Poor")
-)
-
-SOIL_CHOICE = (
-	(0, "Medium"),
-	(1, "Hard"),
-	(-1, "Soft")
-)
-
-FRM_CHOICE = (
-	(-1, "Absent"),
-	(1, "Present"),
-	(0, "Not Sure")
-)
-
-IRR_CHOICE = (
-	(0,"None"),
-	(1,"Moderate"),
-	(2,"Extreme")
-)
-
-TYP_CHOICE = (
-	("Brick Masonary", "Brick Masonary"),
-	("Composite", "Composite")
-)
-
-OPENING_CHOICE = (
-	(0, "Small (<1/3)"),
-	(1, "Moderate (1/3 to 2/3)"),
-	(2, "Large (>2/3)")
-)
-
-BOOL_CHOICE = (
-	(1, "Yes"),
-	(0, "No")
-)
-
-PND_CHOICE = (
-	(0, "Absent"),
-	(1, "Normal Apparent Condition of Adjacent Building"),
-	(2, "Poor Apparent Condition of Adjacent Building")
-)
-
-def getGPScoord(bd):
-
-	map_str = bd.gps_str
-
-	p1 = map_str.find('http')
-
-	mp_url = map_str[p1:]
-
-	pg = urllib2.urlopen(mp_url)
-	newstr = pg.read()
-	newstr = newstr.decode("utf8")
-
-	k1 = newstr.find("cacheResponse(")
-	ext_str = newstr[k1:k1+100]
-
-	k2 = ext_str.find(']')
-
-	coord = ext_str[17:k2]
-	coord = coord.split(',')
-
-	gpsy = float(coord[1])
-	gpsx = float(coord[2])
-
-	psx = round(gpsx, 7)
-	gpsy = round(gpsy, 7)
-
-	bd.gps_x = gpsx
-	bd.gps_y = gpsy
-
-
-def RC_score(bd):
-
-	# Plan Irregularities	
-	if bd.ir_plc is 1 and bd.re_crn is 1:
-		bd.pl_irr = 2
-	elif (bd.ir_plc is 1 and bd.re_crn is 0) or (bd.ir_plc is 0 and bd.re_crn is 1):
-		bd.pl_irr = 1
-	else:
-		bd.pl_irr = 0
-
-	# Soft Storey
-	if bd.op_prk is 1 or bd.ab_prt is 1 or bd.st_shp is 1 or bd.tl_htg is 1:
-		bd.soft_st = 1
-	else:
-		bd.soft_st = 0
-
-	# Vertical Irregularity
-	if bd.pr_stb is 1 or bd.bl_slp is 1:
-		bd.vrt_irr = 1
-	else:
-		bd.vrt_irr = 0
-
-	# Heavy Overhangs
-	if bd.md_hrp is 1 or bd.sb_hrp is 1:
-		bd.hvy_ovh = 1
-	else:
-		bd.hvy_ovh = 0
-
-	# Apparent Quality
-	if bd.ql_mat is 2 and bd.maintc is 2:
-		bd.ap_qlt = 2
-	elif bd.ql_mat is 0 and bd.maintc is 0:
-		bd.ap_qlt = 0
-	else:
-		bd.ap_qlt = 1
-
-	# Pounding
-	if bd.un_flr is 1 or bd.pr_qlt is 1:
-		bd.pnding = 1
-	else:
-		bd.pnding = 0
-
-	buil_flr = int(bd.no_floor)
-
-	if buil_flr is 2:
-		flr = 1
-	elif buil_flr > 5:
-		flr = 6
-	else:
-		flr = buil_flr
-
-	base_table = {
-		 1: {1:150, 2:130, 3:100},
-		 3: {1:140, 2:120, 3:90},
-		 4: {1:120, 2:100, 3:75},
-		 5: {1:100, 2:85, 3:65},
-		 6: {1:90, 2:80, 3:60}
-	}
-
-	base_score = base_table[flr][bd.s_zone]
-
-	soft_st_f = {1:0, 3:-15, 4:-20, 5:-25, 6:-30}
-	hvy_ovh_f = {1:-5, 3:-10, 4:-10, 5:-15, 6:-15}
-	ap_qlt_f = {1:-5, 3:-10, 4:-10, 5:-15, 6:-15}
-	pnding_f = {1:0, 3:-2, 4:-3, 5:-5, 6:-5}
-	bas_prsnt_f = {1:0, 3:3, 4:4, 5:5, 6:5}
-
-	sft = bd.soft_st*soft_st_f[flr]
-	vrt = bd.vrt_irr*(-10)
-	plir = bd.pl_irr*(-5)
-	hvyov = bd.hvy_ovh*hvy_ovh_f[flr]
-	apqlty = bd.ap_qlt*ap_qlt_f[flr]
-	shrt_clm = bd.shr_col*(-5)
-	pound = bd.pnding*2*pnding_f[flr]
-	soilcn = bd.soil_cn*10
-	frmact = bd.frm_act*10
-	bsmt = bd.bas_prsnt*bas_prsnt_f[flr]
-
-	vs = sft + vrt + plir + hvyov + apqlty + shrt_clm + pound + soilcn + frmact + bsmt
-	
-	perf_sc = base_score + vs
-
-	return perf_sc
-
-
-def MS_Score(bd):
-
-	# Structural Irregularity
-	if bd.lck_wll is 1 or bd.hvy_ovh is 1 or bd.re_crn is 1 or bd.crn_bld is 1:
-		bd.str_irr = 1
-	else:
-		bd.str_irr = 0
-
-	# Apparent Quality
-	if bd.ql_mat is 2 and bd.maintc is 2:
-		bd.ap_qlt = 2
-	elif bd.ql_mat is 0 and bd.maintc is 0:
-		bd.ap_qlt = 0
-	else:
-		bd.ap_qlt = 1
-
-	# Diaphragm Action
-	if bd.ab_diap is 1 or bd.lrg_cut is 1:
-		bd.diap_ab = 1
-	else:
-		bd.diap_ab = 0
-
-	# Horizontal Bands
-	if bd.plnt_lvl is 1 or bd.lntl_lvl is 1 or bd.sill_lvl is 1 or bd.roof_lvl is 1:
-		bd.hrz_bnd = 1
-	else:
-		bd.hrz_bnd = 0
-
-	# Arches
-	if bd.arches is 1 or bd.jck_roof is 1:
-		bd.arch = 1
-	else:
-		bd.arch = 0
-
-	# Pounding
-	if bd.cnt_bld is 0:
-		bd.pnding = 0
-	elif bd.pr_qlt is 1:
-		bd.pnding = 2
-	else:
-		bd.pnding = 1
-
-	# Rubble Wall Masonary
-	if bd.thk_wll is 1 or bd.rnd_stn is 1 or bd.hvy_roof is 1:
-		bd.rub_wll = 1
-	else:
-		bd.rub_wll = 0
-
-
-	buil_flr = int(bd.no_floor)
-
-	if buil_flr is 2:
-		flr = 1
-	elif buil_flr > 5:
-		flr = 5
-	else:
-		flr = buil_flr
-
-	base_table = {
-		 1: {1:150, 2:130, 3:100},
-		 3: {1:125, 2:110, 3:85},
-		 4: {1:110, 2:90, 3:70},
-		 5: {1:70, 2:60, 3:50}
-	}
-
-	base_score = base_table[flr][bd.s_zone]
-
-	orn_opn_f = {1:-2, 3:-5, 4:-5, 5:-5}
-	pnding_f = {1:0, 3:-3, 4:-5, 5:-5}
-	diap_ac_f = {1:-10, 3:-15, 4:-15, 5:-15}
-	bas_prsnt_f = {1:0, 3:3, 4:4, 5:5}
-
-	strirr = bd.str_irr * (-10)
-	apqlty = bd.ap_qlt * (-10)
-	soilcn = bd.soil_cn * (10)
-	pound = bd.pnding * pnding_f[flr]
-	wlopng = bd.prt_opn * (-5)
-	irropn = bd.irr_opn * orn_opn_f[flr]
-	diapac = bd.diap_ab * diap_ac_f[flr]
-	hrzbnd = bd.hrz_bnd * (20)
-	archf = bd.arch * (-10)
-	rublwl = bd.rub_wll * (-15)
-	bsmnt = bd.bas_prsnt * bas_prsnt_f[flr]
-
-	vs = strirr + apqlty + soilcn + pound + wlopng + irropn + diapac + hrzbnd + archf + rublwl + bsmnt
-
-	perf_sc = base_score + vs
-
-	return perf_sc
-
-
-
-def HY_Score(bd):
-
-	# Structural Irregularity
-	if bd.lck_wll is 1 or bd.hvy_ovh is 1 or bd.re_crn is 1 or bd.crn_bld is 1:
-		bd.str_irr = 1
-	else:
-		bd.str_irr = 0
-
-	# Apparent Quality
-	if bd.ql_mat is 2 and bd.maintc is 2:
-		bd.ap_qlt = 2
-	elif bd.ql_mat is 0 and bd.maintc is 0:
-		bd.ap_qlt = 0
-	else:
-		bd.ap_qlt = 1
-
-	# Diaphragm Action
-	if bd.ab_diap is 1 or bd.lrg_cut is 1:
-		bd.diap_ab = 1
-	else:
-		bd.diap_ab = 0
-
-	# Horizontal Bands
-	if bd.plnt_lvl is 1 or bd.lntl_lvl is 1 or bd.sill_lvl is 1 or bd.roof_lvl is 1:
-		bd.hrz_bnd = 1
-	else:
-		bd.hrz_bnd = 0
-
-	# Arches
-	if bd.arches is 1 or bd.jck_roof is 1:
-		bd.arch = 1
-	else:
-		bd.arch = 0
-
-	# Pounding
-	if bd.cnt_bld is 0:
-		bd.pnding = 0
-	elif bd.pr_qlt is 1:
-		bd.pnding = 2
-	else:
-		bd.pnding = 1
-
-	# Rubble Wall Masonary
-	if bd.thk_wll is 1 or bd.rnd_stn is 1 or bd.hvy_roof is 1:
-		bd.rub_wll = 1
-	else:
-		bd.rub_wll = 0
-
-
-	buil_flr = int(bd.no_floor)
-
-	if buil_flr is 2:
-		flr = 1
-	elif buil_flr > 5:
-		flr = 5
-	else:
-		flr = buil_flr
-
-	base_table = {
-		 1: {1:150, 2:130, 3:100},
-		 3: {1:125, 2:110, 3:85},
-		 4: {1:110, 2:90, 3:70},
-		 5: {1:70, 2:60, 3:50}
-	}
-
-	base_score = base_table[flr][bd.s_zone]
-
-	orn_opn_f = {1:-2, 3:-5, 4:-5, 5:-5}
-	pnding_f = {1:0, 3:-3, 4:-5, 5:-5}
-	diap_ac_f = {1:-10, 3:-15, 4:-15, 5:-15}
-	bas_prsnt_f = {1:0, 3:3, 4:4, 5:5}
-
-	strirr = bd.str_irr * (-10)
-	apqlty = bd.ap_qlt * (-10)
-	soilcn = bd.soil_cn * (10)
-	pound = bd.pnding * pnding_f[flr]
-	wlopng = bd.prt_opn * (-5)
-	irropn = bd.irr_opn * orn_opn_f[flr]
-	diapac = bd.diap_ab * diap_ac_f[flr]
-	hrzbnd = bd.hrz_bnd * (20)
-	archf = bd.arch * (-10)
-	rublwl = bd.rub_wll * (-15)
-	bsmnt = bd.bas_prsnt * bas_prsnt_f[flr]
-
-	vs = strirr + apqlty + soilcn + pound + wlopng + irropn + diapac + hrzbnd + archf + rublwl + bsmnt
-
-	perf_sc = base_score + vs
-
-	return perf_sc
-
-
+from gps import *
 
 class Team(models.Model):
 	name = models.CharField(max_length = 2, unique = True)
@@ -397,6 +32,8 @@ class RC_Building(models.Model):
 	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING)
 	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
+	plot_no = models.CharField("Plot No.", max_length=20, null=True, blank=True)
+	locality = models.CharField("Locality", max_length=200, default="Sector 23")
 	city = models.CharField("City", max_length=200, default="Gandhinagar")
 	gps_str = models.CharField("Enter Copied Location String", max_length=200, blank=True)
 	gps_x = models.DecimalField("Latitude",max_digits = 9, decimal_places = 7, blank=True)
@@ -479,7 +116,14 @@ class RC_Building(models.Model):
 	hv_cld = models.NullBooleanField("Heavy Cladding", default=False)
 	str_gl = models.NullBooleanField("Structural Glazing", default=False)
 
+	def scratch(self, *args, **kwargs):
+		p = self.addr.lower().index('sector')
+		self.plot_no = self.addr[:p].strip()
+
 	def save(self, *args, **kwargs):
+
+		# Make Address
+		self.addr = self.plot_no + '' + self.locality + '' + self.city
 
 		# Get GPS Coordinates
 		if (self.gps_x is None or self.gps_y is None):
@@ -531,6 +175,8 @@ class MS_Building(models.Model):
 	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING)
 	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
+	plot_no = models.CharField("Plot No.", max_length=20, null=True, blank=True)
+	locality = models.CharField("Locality", max_length=200, default="Sector 23")
 	city = models.CharField("City", max_length=200, default="Gandhinagar")
 	gps_str = models.CharField("Enter Copied Location String", max_length=200, blank=True)
 	gps_x = models.DecimalField("Latitude",max_digits = 9, decimal_places = 7, blank=True)
@@ -619,6 +265,9 @@ class MS_Building(models.Model):
 	hv_cld = models.NullBooleanField("Heavy Cladding", default=False)
 	str_gl = models.NullBooleanField("Structural Glazing", default=False)
 
+	def scratch(self, *args, **kwargs):
+		p = self.addr.lower().index('sector')
+		self.plot_no = self.addr[:p].strip()
 
 	def save(self, *args, **kwargs):
 
@@ -673,6 +322,8 @@ class HY_Building(models.Model):
 	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING)
 	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
+	plot_no = models.CharField("Plot No.", max_length=20, null=True, blank=True)
+	locality = models.CharField("Locality", max_length=200, default="Sector 23")
 	city = models.CharField("City", max_length=200, default="Gandhinagar")
 	gps_str = models.CharField("Enter Copied Location String", max_length=200, blank=True)
 	gps_x = models.DecimalField("Latitude",max_digits = 9, decimal_places = 7, blank=True)
@@ -762,6 +413,9 @@ class HY_Building(models.Model):
 	hv_cld = models.NullBooleanField("Heavy Cladding", default=False)
 	str_gl = models.NullBooleanField("Structural Glazing", default=False)
 
+	def scratch(self, *args, **kwargs):
+		p = self.addr.lower().index('sector')
+		self.plot_no = self.addr[:p].strip()
 
 	def save(self, *args, **kwargs):
 
