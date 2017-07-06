@@ -8,12 +8,20 @@ from .models import RC_Building, Team, MS_Building, HY_Building
 
 admin.site.register(Team)
 
+def recalculate(modeladmin, request, queryset):
+	for bd in queryset:
+		bd.save()
+
+	recalculate.short_description = "Recalculate"
+
+
 class RCAdminSet(admin.ModelAdmin):
 
 	actions_on_top = False
 	actions_on_bottom = True
 	list_filter = ('team', 'dt_tkn')
 	readonly_fields = ('uniq', 'bl_id', 'dt_tkn')
+	actions = [recalculate]
 
 	fieldsets = [
 		('ID', {'fields':['uniq', 'bl_id']}),
@@ -66,6 +74,7 @@ class MSAdminSet(admin.ModelAdmin):
 	actions_on_bottom = True
 	list_filter = ('team', 'dt_tkn')
 	readonly_fields = ('uniq', 'bl_id', 'dt_tkn')
+	actions = [recalculate]
 
 	fieldsets = [
 		('ID', {'fields':['uniq', 'bl_id']}),
@@ -120,6 +129,7 @@ class HYAdminSet(admin.ModelAdmin):
 	actions_on_bottom = True
 	list_filter = ('team', 'dt_tkn')
 	readonly_fields = ('uniq', 'bl_id', 'dt_tkn')
+	actions = [recalculate]
 
 	fieldsets = [
 		('ID', {'fields':['uniq', 'bl_id']}),
