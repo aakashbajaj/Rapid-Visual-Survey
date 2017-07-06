@@ -32,7 +32,7 @@ class RC_Building(models.Model):
 	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING)
 	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
-	plot_no = models.CharField("Plot No.", max_length=20, null=True, blank=True)
+	plot_no = models.CharField("Plot No.", max_length=20, null=True)
 	locality = models.CharField("Locality", max_length=200, default="Sector 23")
 	city = models.CharField("City", max_length=200, default="Gandhinagar")
 	gps_str = models.CharField("Enter Copied Location String", max_length=200, blank=True)
@@ -122,9 +122,6 @@ class RC_Building(models.Model):
 
 	def save(self, *args, **kwargs):
 
-		p = self.addr.lower().index('sector')
-		self.plot_no = self.addr[:p].strip()
-
 		# Make Address
 		self.addr = self.plot_no + ' ' + self.locality + ' ' + self.city
 
@@ -178,7 +175,7 @@ class MS_Building(models.Model):
 	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING)
 	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
-	plot_no = models.CharField("Plot No.", max_length=20, null=True, blank=True)
+	plot_no = models.CharField("Plot No.", max_length=20, null=True)
 	locality = models.CharField("Locality", max_length=200, default="Sector 23")
 	city = models.CharField("City", max_length=200, default="Gandhinagar")
 	gps_str = models.CharField("Enter Copied Location String", max_length=200, blank=True)
@@ -274,9 +271,6 @@ class MS_Building(models.Model):
 
 	def save(self, *args, **kwargs):
 
-		p = self.addr.lower().index('sector')
-		self.plot_no = self.addr[:p].strip()
-
 		# Make Address
 		self.addr = self.plot_no + ' ' + self.locality + ' ' + self.city
 
@@ -331,7 +325,7 @@ class HY_Building(models.Model):
 	team = models.ForeignKey(Team, on_delete = models.DO_NOTHING)
 	bl_id = models.CharField("Building ID",max_length=10, null=True	, blank=True)
 	addr = models.CharField("Address",max_length = 200)
-	plot_no = models.CharField("Plot No.", max_length=20, null=True, blank=True)
+	plot_no = models.CharField("Plot No.", max_length=20, null=True)
 	locality = models.CharField("Locality", max_length=200, default="Sector 23")
 	city = models.CharField("City", max_length=200, default="Gandhinagar")
 	gps_str = models.CharField("Enter Copied Location String", max_length=200, blank=True)
@@ -427,9 +421,6 @@ class HY_Building(models.Model):
 		self.plot_no = self.addr[:p].strip()
 
 	def save(self, *args, **kwargs):
-
-		p = self.addr.lower().index('sector')
-		self.plot_no = self.addr[:p].strip()
 
 		# Make Address
 		self.addr = self.plot_no + ' ' + self.locality + ' ' + self.city
