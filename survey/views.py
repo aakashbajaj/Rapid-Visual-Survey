@@ -40,6 +40,7 @@ def BuildingExcel(request, **kwargs):
 	worksheet.write(1,7, "Day Occupancy", bold)
 	worksheet.write(1,8, "Night Occupancy", bold)
 	worksheet.write(1,9, "RVS Score", bold)
+	worksheet.write(1,10, "Basement", bold)
 
 	for i, p in enumerate(rcbuilding):
 		worksheet.write(i+2,0, p.uniq)
@@ -52,6 +53,7 @@ def BuildingExcel(request, **kwargs):
 		worksheet.write(i+2,7, p.oc_day)
 		worksheet.write(i+2,8, p.oc_night)
 		worksheet.write(i+2,9, p.perf_score)
+		worksheet.write(i+2,10, p.bas_prsnt)
 		k = i+1
 
 	for i, p in enumerate(msbuilding):
@@ -65,6 +67,7 @@ def BuildingExcel(request, **kwargs):
 		worksheet.write(k+i+2,7, p.oc_day)
 		worksheet.write(k+i+2,8, p.oc_night)
 		worksheet.write(k+i+2,9, p.perf_score)
+		worksheet.write(k+i+2,10, p.bas_prsnt)
 		k2 = k+i+1
 
 	for i, p in enumerate(hybuilding):
@@ -78,6 +81,7 @@ def BuildingExcel(request, **kwargs):
 		worksheet.write(k2+i+2,7, p.oc_day)
 		worksheet.write(k2+i+2,8, p.oc_night)
 		worksheet.write(k2+i+2,9, p.perf_score)
+		worksheet.write(k2+i+2,10, p.bas_prsnt)
 
 	workbook.close()
 	filename = 'RVS.xlsx'
@@ -119,6 +123,7 @@ def RCExcel(request):
 	worksheet.write(1,14, "Short Column", bold)
 	worksheet.write(1,15, "Apparent Quality", bold)
 	worksheet.write(1,16, "Pounding", bold)
+	worksheet.write(1,17, "Basement", bold)
 
 	for i, p in enumerate(rcbuilding):
 		worksheet.write(i+2,0, p.uniq)
@@ -138,6 +143,7 @@ def RCExcel(request):
 		worksheet.write(i+2,14, p.shr_col)
 		worksheet.write(i+2,15, p.ap_qlt)
 		worksheet.write(i+2,16, p.pnding)
+		worksheet.write(i+2,17, p.bas_prsnt)
 	
 	workbook.close()
 	filename = 'RC-Excel.xlsx'
@@ -179,6 +185,7 @@ def MSExcel(request):
 	worksheet.write(1,14, "Pounding", bold)
 	worksheet.write(1,15, "Opening Size", bold)
 	worksheet.write(1,16, "Horizontal Bands", bold)
+	worksheet.write(1,17, "Basement", bold)
 
 	for i, p in enumerate(msbuilding):
 		worksheet.write(i+2,0, p.uniq)
@@ -198,6 +205,7 @@ def MSExcel(request):
 		worksheet.write(i+2,14, p.pnding)
 		worksheet.write(i+2,15, p.prt_opn)
 		worksheet.write(i+2,16, p.hrz_bnd)
+		worksheet.write(i+2,17, p.bas_prsnt)
 
 	workbook.close()
 	filename = 'MS-Excel.xlsx'
@@ -240,6 +248,7 @@ def HYExcel(request):
 	worksheet.write(1,15, "Opening Size", bold)
 	worksheet.write(1,16, "Horizontal Bands", bold)
 	worksheet.write(1,17, "Hybrid Action", bold)
+	worksheet.write(1,18, "Basement", bold)
 
 	for i, p in enumerate(hybuilding):
 		worksheet.write(i+2,0, p.uniq)
@@ -260,6 +269,7 @@ def HYExcel(request):
 		worksheet.write(i+2,15, p.prt_opn)
 		worksheet.write(i+2,16, p.hrz_bnd)
 		worksheet.write(i+2,17, p.hyb_act)
+		worksheet.write(i+2,18, p.bas_prsnt)
 
 	workbook.close()
 	filename = 'HY-Excel.xlsx'
