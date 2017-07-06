@@ -9,6 +9,12 @@ from .models import RC_Building, Team, MS_Building, HY_Building
 admin.site.register(Team)
 
 class RCAdminSet(admin.ModelAdmin):
+
+	actions_on_top = False
+	actions_on_bottom = True
+	list_filter = ('team', 'dt_tkn')
+	readonly_fields = ('uniq', 'bl_id', 'dt_tkn')
+
 	fieldsets = [
 		('ID', {'fields':['uniq', 'bl_id']}),
 
@@ -47,12 +53,17 @@ class RCAdminSet(admin.ModelAdmin):
 		('Signature', {'fields':['sign_url']})
 	]
 
-	list_display = ('bl_id','perf_score','dt_tkn')
+	list_display = ('bl_id','addr','no_floor','perf_score','dt_tkn')
 
 admin.site.register(RC_Building, RCAdminSet)
 
 
 class MSAdminSet(admin.ModelAdmin):
+
+	actions_on_top = False
+	actions_on_bottom = True
+	list_filter = ('team', 'dt_tkn')
+	readonly_fields = ('uniq', 'bl_id', 'dt_tkn')
 
 	fieldsets = [
 		('ID', {'fields':['uniq', 'bl_id']}),
@@ -93,13 +104,18 @@ class MSAdminSet(admin.ModelAdmin):
 
 	]
 
-	list_display = ('bl_id','perf_score','dt_tkn')
+	list_display = ('bl_id','addr','no_floor','perf_score','dt_tkn')
 
 
 admin.site.register(MS_Building, MSAdminSet)
 
 
 class HYAdminSet(admin.ModelAdmin):
+
+	actions_on_top = False
+	actions_on_bottom = True
+	list_filter = ('team', 'dt_tkn')
+	readonly_fields = ('uniq', 'bl_id', 'dt_tkn')
 
 	fieldsets = [
 		('ID', {'fields':['uniq', 'bl_id']}),
@@ -142,6 +158,6 @@ class HYAdminSet(admin.ModelAdmin):
 
 	]
 
-	list_display = ('bl_id','perf_score','dt_tkn')
+	list_display = ('bl_id','addr','no_floor','perf_score','dt_tkn')
 
 admin.site.register(HY_Building, HYAdminSet)
