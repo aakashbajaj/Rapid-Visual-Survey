@@ -123,7 +123,7 @@ class RC_Building(models.Model):
 	def save(self, *args, **kwargs):
 
 		# Make Address
-		self.addr = self.plot_no + '' + self.locality + '' + self.city
+		self.addr = self.plot_no + ' ' + self.locality + ' ' + self.city
 
 		# Get GPS Coordinates
 		if (self.gps_x is None or self.gps_y is None):
@@ -270,6 +270,9 @@ class MS_Building(models.Model):
 		self.plot_no = self.addr[:p].strip()
 
 	def save(self, *args, **kwargs):
+
+		# Make Address
+		self.addr = self.plot_no + ' ' + self.locality + ' ' + self.city
 
 		# Get GPS Coordinates
 		if (self.gps_x is None or self.gps_y is None):
@@ -418,6 +421,9 @@ class HY_Building(models.Model):
 		self.plot_no = self.addr[:p].strip()
 
 	def save(self, *args, **kwargs):
+
+		# Make Address
+		self.addr = self.plot_no + ' ' + self.locality + ' ' + self.city
 
 		# Get GPS Coordinates
 		if (self.gps_x is None or self.gps_y is None):
