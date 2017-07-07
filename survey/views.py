@@ -91,6 +91,59 @@ def BuildingExcel(request, **kwargs):
 		worksheet.write(k2+i+2,11, p.hvy_ovh)
 		worksheet.write(k2+i+2,12, p.pnding)
 
+	worksheet2 = workbook.add_worksheet("Sheet2")
+	bas_cnt = 0
+	ovh_cnt = 0
+	pnd_cnt = 0
+	total_cnt = RC_Building.objects.all().count() + MS_Building.objects.all().count() + HY_Building.objects.all().count()
+	for i,p in enumerate(rcbuilding):
+		if p.bas_prsnt is 1:
+			bas_cnt = bas_cnt + 1
+		if p.hvy_ovh is 1:
+			ovh_cnt = ovh_cnt + 1
+		if p.pnding is 1:
+			pnd_cnt = pnd_cnt + 1
+
+	for i,p in enumerate(msbuilding):
+		if p.bas_prsnt is 1:
+			bas_cnt = bas_cnt + 1
+		if p.hvy_ovh is 1:
+			ovh_cnt = ovh_cnt + 1
+		if p.pnding is 1:
+			pnd_cnt = pnd_cnt + 1
+
+	for i,p in enumerate(hybuilding):
+		if p.bas_prsnt is 1:
+			bas_cnt = bas_cnt + 1
+		if p.hvy_ovh is 1:
+			ovh_cnt = ovh_cnt + 1
+		if p.pnding is 1:
+			pnd_cnt = pnd_cnt + 1
+
+	worksheet2.write(0,0, "Basements", bold)
+	worksheet2.write(1,0, "Total", bold)
+	worksheet2.write(1,1, total_cnt)
+	worksheet2.write(2,0, "Present")
+	worksheet2.write(2,1, bas_cnt)
+	worksheet2.write(3,0, "Absent")
+	worksheet2.write(3,1, total_cnt - bas_cnt)
+
+	worksheet2.write(6,0, "Heavy Overhangs", bold)
+	worksheet2.write(7,0, "Total", bold)
+	worksheet2.write(7,1, total_cnt)
+	worksheet2.write(8,0, "Present")
+	worksheet2.write(8,1, ovh_cnt)
+	worksheet2.write(9,0, "Absent")
+	worksheet2.write(9,1, total_cnt - ovh_cnt)
+
+	worksheet2.write(12,0, "Pounding", bold)
+	worksheet2.write(13,0, "Total", bold)
+	worksheet2.write(13,1, total_cnt)
+	worksheet2.write(14,0, "Present")
+	worksheet2.write(14,1, pnd_cnt)
+	worksheet2.write(15,0, "Absent")
+	worksheet2.write(15,1, total_cnt - pnd_cnt)	
+
 	workbook.close()
 	filename = 'RVS.xlsx'
 	output.seek(0)
@@ -153,6 +206,10 @@ def RCExcel(request):
 		worksheet.write(i+2,16, p.pnding)
 		worksheet.write(i+2,17, p.bas_prsnt)
 	
+	worksheet2 = workbook.add_worksheet("Sheet2")
+	total_cnt = RC_Building.objects.all().count()
+
+
 	workbook.close()
 	filename = 'RC-Excel.xlsx'
 	output.seek(0)
