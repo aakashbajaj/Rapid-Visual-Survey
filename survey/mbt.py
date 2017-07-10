@@ -14,7 +14,7 @@ def ms_mbt(p):
 		if nflr == 1:
 			return "ME1L1"
 		elif nflr == 2:
-			return "ME2L2"
+			return "ME1L2"
 		else:
 			return "ME1M"
 

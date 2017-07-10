@@ -22,7 +22,7 @@ class RCAdminSet(admin.ModelAdmin):
 
 	actions_on_top = False
 	actions_on_bottom = True
-	list_filter = ('team', 'dt_tkn')
+	list_filter = ('team', 'dt_tkn','bl_use')
 	readonly_fields = ('uniq', 'bl_id', 'dt_tkn')
 	actions = [recalculate]
 
@@ -75,7 +75,7 @@ class MSAdminSet(admin.ModelAdmin):
 
 	actions_on_top = False
 	actions_on_bottom = True
-	list_filter = ('team', 'dt_tkn')
+	list_filter = ('team', 'dt_tkn', 'bl_use')
 	readonly_fields = ('uniq', 'bl_id', 'dt_tkn')
 	actions = [recalculate]
 
@@ -130,7 +130,7 @@ class HYAdminSet(admin.ModelAdmin):
 
 	actions_on_top = False
 	actions_on_bottom = True
-	list_filter = ('team', 'dt_tkn')
+	list_filter = ('team', 'dt_tkn','bl_use')
 	readonly_fields = ('uniq', 'bl_id', 'dt_tkn')
 	actions = [recalculate]
 
