@@ -21,25 +21,25 @@ def ms_mbt(p):
 	nflr = p.no_floor + p.bas_prsnt
 
 	if p.yr_constr is None:
-		if p.nflr is 1:
+		if nflr == 1:
 			return "MC3L1"
-		elif p.nflr is 2:
+		elif nflr == 2:
 			return "MC3L2"
 		else:
 			return "MC3M"
 
 	elif p.yr_constr > 2001 and p.hrz_bnd is 1:
-		if p.nflr is 1:
+		if nflr == 1:
 			return "ME1L1"
-		elif p.nflr is 2:
+		elif nflr == 2:
 			return "ME2L2"
 		else:
 			return "ME1M"
 
 	else:
-		if p.nflr is 1:
+		if nflr == 1:
 			return "MC3L1"
-		elif p.nflr is 2:
+		elif nflr == 2:
 			return "MC3L2"
 		else:
 			return "MC3M"
