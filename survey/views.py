@@ -43,6 +43,7 @@ def BuildingExcel(request, **kwargs):
 	worksheet.write(1,10, "Basement", bold)
 	worksheet.write(1,11, "Heavy Overhangs", bold)
 	worksheet.write(1,12, "Pounding", bold)
+	worksheet.write(1,13, "Year of Construction", bold)
 
 	for i, p in enumerate(rcbuilding):
 		worksheet.write(i+2,0, p.uniq)
@@ -58,13 +59,17 @@ def BuildingExcel(request, **kwargs):
 		worksheet.write(i+2,10, p.bas_prsnt)
 		worksheet.write(i+2,11, p.hvy_ovh)
 		worksheet.write(i+2,12, p.pnding)
+		worksheet.write(i+2,13, p.yr_constr)
 		k = i+1
 
 	for i, p in enumerate(msbuilding):
 		worksheet.write(k+i+2,0, p.uniq)
 		worksheet.write(k+i+2,1, p.bl_id)
 		worksheet.write(k+i+2,2, p.addr)
-		worksheet.write(k+i+2,3, "Masonary")
+		if p.ty_const is "Composite":
+			worksheet.write(k+i+2,3, "Composite")
+		else:
+			worksheet.write(k+i+2,3, "Brick Masonary")
 		worksheet.write(k+i+2,4, p.no_floor)
 		worksheet.write(k+i+2,5, p.gps_x)
 		worksheet.write(k+i+2,6, p.gps_y)
@@ -74,6 +79,7 @@ def BuildingExcel(request, **kwargs):
 		worksheet.write(k+i+2,10, p.bas_prsnt)
 		worksheet.write(k+i+2,11, p.hvy_ovh)
 		worksheet.write(k+i+2,12, p.pnding)
+		worksheet.write(k+i+2,13, p.yr_constr)
 		k2 = k+i+1
 
 	for i, p in enumerate(hybuilding):
@@ -90,6 +96,7 @@ def BuildingExcel(request, **kwargs):
 		worksheet.write(k2+i+2,10, p.bas_prsnt)
 		worksheet.write(k2+i+2,11, p.hvy_ovh)
 		worksheet.write(k2+i+2,12, p.pnding)
+		worksheet.write(k2+i+2,12, p.yr_constr)
 
 	worksheet2 = workbook.add_worksheet("Sheet2")
 	bas_cnt = 0
