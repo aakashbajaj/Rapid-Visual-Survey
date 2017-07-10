@@ -46,7 +46,7 @@ def rc_mbt(p):
 	else:
 		if nflr == 1 or nflr == 2 or nflr == 3:
 			return "RC2L(LC)"
-		elif nflr == 4 or nflr == 6 or nflr == 7:
+		elif nflr == 4 or nflr==5 or nflr == 6 or nflr == 7:
 			return "RC2M(LC)"
 		else:
 			return "RC2H(LC)"
