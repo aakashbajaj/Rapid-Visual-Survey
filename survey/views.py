@@ -96,7 +96,7 @@ def BuildingExcel(request, **kwargs):
 		worksheet.write(k2+i+2,10, p.bas_prsnt)
 		worksheet.write(k2+i+2,11, p.hvy_ovh)
 		worksheet.write(k2+i+2,12, p.pnding)
-		worksheet.write(k2+i+2,12, p.yr_constr)
+		worksheet.write(k2+i+2,13, p.yr_constr)
 
 	worksheet2 = workbook.add_worksheet("Sheet2")
 	bas_cnt = 0
