@@ -25,6 +25,9 @@ class Team(models.Model):
 	def __str__(self):
 		return self.name
 
+	def getname(self):
+		return self.name
+
 class RC_Building(models.Model):
 	
 	# Basic Info
