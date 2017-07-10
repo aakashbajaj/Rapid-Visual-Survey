@@ -251,6 +251,7 @@ def MSExcel(request):
 	worksheet.write(1,15, "Opening Size", bold)
 	worksheet.write(1,16, "Horizontal Bands", bold)
 	worksheet.write(1,17, "Basement", bold)
+	worksheet.write(1,18, "Type of Construction", bold)
 
 	for i, p in enumerate(msbuilding):
 		worksheet.write(i+2,0, p.uniq)
@@ -271,6 +272,7 @@ def MSExcel(request):
 		worksheet.write(i+2,15, p.prt_opn)
 		worksheet.write(i+2,16, p.hrz_bnd)
 		worksheet.write(i+2,17, p.bas_prsnt)
+		worksheet.write(i+2,18, p.ty_const)
 
 	workbook.close()
 	filename = 'MS-Excel.xlsx'
