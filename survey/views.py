@@ -13,36 +13,10 @@ import csv
 import xlsxwriter, StringIO
 from time import strftime, gmtime, localtime
 
+from mbt import *
+
 def index(request):
 	return HttpResponse("Hello");
-
-def ms_mbt(p):
-	
-	nflr = p.no_floor + p.bas_prsnt
-
-	if p.yr_constr is None:
-		if nflr == 1:
-			return "MC3L1"
-		elif nflr == 2:
-			return "MC3L2"
-		else:
-			return "MC3M"
-
-	elif p.yr_constr > 2001 and p.hrz_bnd is 1:
-		if nflr == 1:
-			return "ME1L1"
-		elif nflr == 2:
-			return "ME2L2"
-		else:
-			return "ME1M"
-
-	else:
-		if nflr == 1:
-			return "MC3L1"
-		elif nflr == 2:
-			return "MC3L2"
-		else:
-			return "MC3M"
 
 
 @staff_member_required
@@ -91,6 +65,8 @@ def BuildingExcel(request, **kwargs):
 		worksheet.write(i+2,11, p.hvy_ovh)
 		worksheet.write(i+2,12, p.pnding)
 		worksheet.write(i+2,13, p.yr_constr)
+		mbt = rc_mbt(p)
+		worksheet.write(i+2,14, mbt)
 
 		k = i+1
 
