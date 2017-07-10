@@ -16,6 +16,35 @@ from time import strftime, gmtime, localtime
 def index(request):
 	return HttpResponse("Hello");
 
+def ms_mbt(p):
+	
+	nflr = p.no_floor + p.bas_prsnt
+
+	if p.yr_constr is None:
+		if p.nflr is 1:
+			return "MC3L1"
+		elif p.nflr is 2:
+			return "MC3L2"
+		else:
+			return "MC3M"
+
+	elif p.yr_constr > 2001 and p.hrz_bnd is 1:
+		if p.nflr is 1:
+			return "ME1L1"
+		elif p.nflr is 2:
+			return "ME2L2"
+		else:
+			return "ME1M"
+
+	else:
+		if p.nflr is 1:
+			return "MC3L1"
+		elif p.nflr is 2:
+			return "MC3L2"
+		else:
+			return "MC3M"
+
+
 @staff_member_required
 def BuildingExcel(request, **kwargs):
 	rcbuilding = RC_Building.objects.all().order_by('uniq')
@@ -29,6 +58,7 @@ def BuildingExcel(request, **kwargs):
 	generated = strftime("%d-%m-%Y %H:%M:%S IST", localtime())
 	worksheet.write(0,1, generated)
 	bold = workbook.add_format({'bold': True})
+
 
 	worksheet.write(1,0, "Unique ID", bold)
 	worksheet.write(1,1, "Building ID", bold)
@@ -44,6 +74,7 @@ def BuildingExcel(request, **kwargs):
 	worksheet.write(1,11, "Heavy Overhangs", bold)
 	worksheet.write(1,12, "Pounding", bold)
 	worksheet.write(1,13, "Year of Construction", bold)
+	worksheet.write(1,14, "MBT", bold)
 
 	for i, p in enumerate(rcbuilding):
 		worksheet.write(i+2,0, p.uniq)
@@ -60,6 +91,7 @@ def BuildingExcel(request, **kwargs):
 		worksheet.write(i+2,11, p.hvy_ovh)
 		worksheet.write(i+2,12, p.pnding)
 		worksheet.write(i+2,13, p.yr_constr)
+
 		k = i+1
 
 	for i, p in enumerate(msbuilding):
@@ -80,6 +112,8 @@ def BuildingExcel(request, **kwargs):
 		worksheet.write(k+i+2,11, p.hvy_ovh)
 		worksheet.write(k+i+2,12, p.pnding)
 		worksheet.write(k+i+2,13, p.yr_constr)
+		mbt = ms_mbt(p)
+		worksheet.write(k+i+2,14, mbt)
 		k2 = k+i+1
 
 	for i, p in enumerate(hybuilding):
@@ -97,6 +131,8 @@ def BuildingExcel(request, **kwargs):
 		worksheet.write(k2+i+2,11, p.hvy_ovh)
 		worksheet.write(k2+i+2,12, p.pnding)
 		worksheet.write(k2+i+2,13, p.yr_constr)
+		mbt = ms_mbt(p)
+		worksheet.write(k2+i+2,14, mbt)
 
 	worksheet2 = workbook.add_worksheet("Sheet2")
 	bas_cnt = 0
