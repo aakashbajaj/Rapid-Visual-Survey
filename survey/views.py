@@ -66,7 +66,7 @@ def BuildingExcel(request, **kwargs):
 		worksheet.write(k+i+2,0, p.uniq)
 		worksheet.write(k+i+2,1, p.bl_id)
 		worksheet.write(k+i+2,2, p.addr)
-		if p.ty_const is "Composite":
+		if p.ty_const == "Composite":
 			worksheet.write(k+i+2,3, "Composite")
 		else:
 			worksheet.write(k+i+2,3, "Brick Masonary")
