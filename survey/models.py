@@ -169,7 +169,7 @@ class RC_Building(models.Model):
 
 	class Meta:
 		verbose_name = "RC Building"
-		verbose_name_plural = "RC Buildings"
+		verbose_name_plural = "RC Building"
 	
 class MS_Building(models.Model):
 	
